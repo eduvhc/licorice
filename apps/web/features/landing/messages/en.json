@@ -1,0 +1,101 @@
+{
+  "badge": "Generic SaaS starter with built-in auth and agent-safe architecture",
+  "hero": {
+    "title": "Start your SaaS with the common foundations already solved.",
+    "description": "Authentication, account flows, user management surfaces, and email-ready architecture are already in place so your team can build the actual product sooner.",
+    "primary": {
+      "guest": "Start with auth built in",
+      "user": "Open starter workspace"
+    },
+    "secondary": "Preview the workspace"
+  },
+  "principles": [
+    {
+      "title": "Feature slices stay isolated",
+      "description": "Agents can work inside onboarding, billing, or product features without tearing through unrelated setup code."
+    },
+    {
+      "title": "Server-first by default",
+      "description": "Auth, mutations, and route guards live on the server so common SaaS logic stays predictable."
+    },
+    {
+      "title": "Ready for extension",
+      "description": "The starter gives you enough structure to move fast without hard-coding your actual domain too early."
+    }
+  ],
+  "preview": {
+    "title": "Starter workspace",
+    "subtitle": "Auth, account, and product entry surfaces already connected",
+    "cards": [
+      {
+        "eyebrow": "Authentication",
+        "title": "Email/password, social sign-in hooks, and SSR session guards.",
+        "description": "You start from a real login flow, not a blank route and a TODO list."
+      },
+      {
+        "eyebrow": "User management",
+        "title": "Account views, protected routes, and reusable session helpers.",
+        "description": "The starter already treats identity as product infrastructure."
+      },
+      {
+        "eyebrow": "Delivery systems",
+        "title": "A clean place to add emails, lifecycle messaging, and automation.",
+        "description": "The architecture is ready for invites, verification, resets, and future billing flows."
+      }
+    ],
+    "signals": [
+      { "label": "Core slices", "value": "04" },
+      { "label": "Protected routes", "value": "Ready" },
+      { "label": "Starter systems", "value": "Auth + account" },
+      { "label": "Hours saved", "value": "40+" }
+    ]
+  },
+  "sections": {
+    "why": {
+      "badge": "Why this exists",
+      "title": "Skip the architecture tax that every SaaS pays anyway.",
+      "cards": [
+        {
+          "title": "The boring work is already done",
+          "description": "Instead of spending the first sprint on auth and route structure, you start from a stable baseline."
+        },
+        {
+          "title": "AI agents get bounded contexts",
+          "description": "They receive clear slices with predictable server actions and UI surfaces instead of a monolithic tree."
+        }
+      ]
+    },
+    "builtIns": {
+      "badge": "Built-ins",
+      "title": "Start from the systems every SaaS repeats.",
+      "description": "Authentication, account flows, route protection, email touchpoints, and starter product surfaces are already here.",
+      "items": [
+        {
+          "title": "Authentication and sessions",
+          "description": "Email/password, social provider hooks, SSR session reads, and guarded routes."
+        },
+        {
+          "title": "User lifecycle surfaces",
+          "description": "Sign-in, sign-up, account management, and room for onboarding or role-based access."
+        },
+        {
+          "title": "Email-ready architecture",
+          "description": "A clear home for verification, invitations, password reset, and lifecycle messaging."
+        }
+      ]
+    },
+    "agents": {
+      "badge": "For AI agents",
+      "title": "Give agents a starter they can extend safely.",
+      "description": "Each slice owns its UI, server rules, and data flow, so automated contributors can add features without destabilizing the rest.",
+      "runbook": [
+        "Read the slice-local server actions and route guards first.",
+        "Add new product logic inside its own feature boundary.",
+        "Reuse auth, account, and email primitives instead of rebuilding them.",
+        "Leave unrelated slices untouched unless the contract really changes."
+      ],
+      "file": "agent-runbook.md",
+      "destination": "features/new-product-slice"
+    }
+  }
+}

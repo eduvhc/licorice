@@ -1,0 +1,48 @@
+{
+  "badge": "Legal",
+  "terms": {
+    "title": "Termos de Servico",
+    "description": "Template inicial de acordo para produtos SaaS construidos com Licorice. Deve ser revisto com apoio juridico antes de uso em producao.",
+    "sections": [
+      {
+        "title": "Uso do servico",
+        "body": "Pode utilizar o servico de acordo com o seu plano e necessidades internas. Continua responsavel pela forma como a sua equipa, prestadores e agentes automatizados acedem ao workspace."
+      },
+      {
+        "title": "Contas e seguranca",
+        "body": "Deve manter as credenciais seguras e notificar o operador em caso de acesso nao autorizado. Continua responsavel pela atividade realizada com a sua conta, exceto quando o problema for causado pelo operador."
+      },
+      {
+        "title": "Uso aceitavel",
+        "body": "Nao pode utilizar o produto para violar leis, abusar da infraestrutura, interferir com outros tenants ou enviar codigo malicioso. Automacoes com IA seguem as mesmas regras que utilizadores humanos."
+      },
+      {
+        "title": "Alteracoes e disponibilidade",
+        "body": "O produto pode evoluir ao longo do tempo. Funcionalidades podem ser melhoradas, renomeadas ou removidas com aviso razoavel quando aplicavel. Objetivos de disponibilidade devem ser definidos no acordo comercial e nao apenas neste template."
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Politica de Privacidade",
+    "description": "Template inicial de privacidade para produtos SaaS construidos com Licorice. Deve ser revisto com apoio juridico antes de uso em producao.",
+    "sections": [
+      {
+        "title": "O que recolhemos",
+        "body": "Podemos recolher dados de conta, informacao de autenticacao, eventos de utilizacao do produto e metadados operacionais necessarios para proteger, manter e melhorar o servico."
+      },
+      {
+        "title": "Porque processamos dados",
+        "body": "Processamos dados para fornecer o servico, autenticar utilizadores, prevenir abuso, apoiar clientes, enviar comunicacoes transacionais e compreender a fiabilidade do produto."
+      },
+      {
+        "title": "Como os dados sao partilhados",
+        "body": "Os dados podem ser partilhados com subprocessadores que ajudam a operar o servico, como fornecedores de infraestrutura, email, analytics e suporte. Nao vendemos dados pessoais."
+      },
+      {
+        "title": "Retencao e direitos",
+        "body": "Mantemos dados apenas pelo tempo necessario por motivos operacionais, contratuais ou legais. Dependendo da jurisdicao, os utilizadores podem pedir acesso, correcao, exportacao ou eliminacao de dados pessoais."
+      }
+    ]
+  },
+  "back": "Voltar ao starter"
+}

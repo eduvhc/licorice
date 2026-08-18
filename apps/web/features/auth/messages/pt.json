@@ -1,0 +1,44 @@
+{
+  "brand": "Licorice",
+  "genericError": "Falha na autenticacao.",
+  "social": {
+    "continueWith": "Continuar com",
+    "providerOrEmail": "Continue com um provider social ou use o seu email",
+    "divider": "OU",
+    "providers": {
+      "apple": "Apple",
+      "discord": "Discord",
+      "github": "GitHub",
+      "google": "Google"
+    }
+  },
+  "signIn": {
+    "title": "Bem-vindo de volta",
+    "emailDescription": "Entre com o seu email e palavra-passe",
+    "submit": "Entrar",
+    "switchPrompt": "Ainda nao tem conta?",
+    "switchCta": "Criar conta"
+  },
+  "signUp": {
+    "title": "Crie a sua conta",
+    "emailDescription": "Crie conta com o seu email e palavra-passe",
+    "submit": "Criar conta",
+    "switchPrompt": "Ja tem conta?",
+    "switchCta": "Entrar"
+  },
+  "fields": {
+    "name": "Nome",
+    "email": "Email",
+    "password": "Palavra-passe",
+    "namePlaceholder": "Joana Silva",
+    "emailPlaceholder": "m@exemplo.com",
+    "showPassword": "Mostrar palavra-passe",
+    "hidePassword": "Esconder palavra-passe"
+  },
+  "legal": {
+    "prefix": "Ao continuar, concorda com os nossos",
+    "conjunction": "e com a nossa",
+    "terms": "Termos de Servico",
+    "privacy": "Politica de Privacidade"
+  }
+}

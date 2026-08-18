@@ -1,0 +1,101 @@
+{
+  "badge": "Template genérico de SaaS com auth integrada e arquitetura segura para agentes",
+  "hero": {
+    "title": "Começa o teu SaaS com as fundações comuns já resolvidas.",
+    "description": "Autenticação, fluxos de conta, superfícies de gestão de utilizadores e arquitetura pronta para emails já existem para a equipa focar-se no produto real mais cedo.",
+    "primary": {
+      "guest": "Começar com auth integrada",
+      "user": "Abrir workspace base"
+    },
+    "secondary": "Ver workspace"
+  },
+  "principles": [
+    {
+      "title": "Slices isoladas",
+      "description": "Os agentes podem trabalhar em onboarding, billing ou features sem atravessar setup não relacionado."
+    },
+    {
+      "title": "Server-first por omissão",
+      "description": "Auth, mutações e guards vivem no servidor para a lógica comum de SaaS ficar previsível."
+    },
+    {
+      "title": "Pronto a estender",
+      "description": "O starter dá estrutura suficiente para mover rápido sem forçar o domínio real demasiado cedo."
+    }
+  ],
+  "preview": {
+    "title": "Starter workspace",
+    "subtitle": "Auth, conta e superfícies iniciais de produto já ligadas",
+    "cards": [
+      {
+        "eyebrow": "Autenticação",
+        "title": "Email/password, hooks para social sign-in e guards SSR de sessão.",
+        "description": "Começas com um fluxo de login real, não com uma rota vazia e uma lista de TODOs."
+      },
+      {
+        "eyebrow": "Gestão de utilizadores",
+        "title": "Views de conta, rotas protegidas e helpers reutilizáveis de sessão.",
+        "description": "O starter já trata identidade como infraestrutura de produto."
+      },
+      {
+        "eyebrow": "Sistemas de entrega",
+        "title": "Um sítio limpo para adicionar emails, mensagens de lifecycle e automações.",
+        "description": "A arquitetura já está preparada para convites, verificação, resets e billing no futuro."
+      }
+    ],
+    "signals": [
+      { "label": "Slices base", "value": "04" },
+      { "label": "Rotas protegidas", "value": "Prontas" },
+      { "label": "Sistemas starter", "value": "Auth + conta" },
+      { "label": "Horas poupadas", "value": "40+" }
+    ]
+  },
+  "sections": {
+    "why": {
+      "badge": "Porque existe",
+      "title": "Evita a taxa de arquitetura que todos os SaaS acabam por pagar.",
+      "cards": [
+        {
+          "title": "O trabalho aborrecido já está feito",
+          "description": "Em vez de gastar a primeira sprint em auth e estrutura de rotas, começas de uma base estável."
+        },
+        {
+          "title": "Os agentes recebem contextos limitados",
+          "description": "Recebem slices claras com server actions e UI previsível, não uma árvore monolítica."
+        }
+      ]
+    },
+    "builtIns": {
+      "badge": "Incluído",
+      "title": "Começa pelos sistemas que qualquer SaaS repete.",
+      "description": "Autenticação, fluxos de conta, proteção de rotas, touchpoints de email e superfícies iniciais de produto já existem.",
+      "items": [
+        {
+          "title": "Autenticação e sessões",
+          "description": "Email/password, hooks para providers sociais, leitura SSR de sessão e guards de rota."
+        },
+        {
+          "title": "Fluxos de utilizador",
+          "description": "Sign-in, sign-up, gestão de conta e espaço para onboarding ou acesso por roles."
+        },
+        {
+          "title": "Arquitetura pronta para emails",
+          "description": "Uma base clara para verificação, convites, reset de password e mensagens de lifecycle."
+        }
+      ]
+    },
+    "agents": {
+      "badge": "Para agentes",
+      "title": "Dá aos agentes um starter que podem estender com segurança.",
+      "description": "Cada slice controla a sua UI, regras de servidor e fluxo de dados, por isso os agentes conseguem adicionar features sem destabilizar o resto.",
+      "runbook": [
+        "Ler primeiro as server actions e route guards da slice.",
+        "Adicionar nova lógica de produto dentro do seu boundary próprio.",
+        "Reutilizar auth, conta e primitivas de email em vez de reconstruir.",
+        "Não tocar noutras slices se o contrato não mudar mesmo."
+      ],
+      "file": "agent-runbook.md",
+      "destination": "features/new-product-slice"
+    }
+  }
+}

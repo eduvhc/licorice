@@ -1,0 +1,13 @@
+{
+  "eyebrow": "Conta",
+  "title": "Conta renderizada no servidor",
+  "description": "Esta rota le a sessao do Better Auth no servidor e mantem o comportamento de conta isolado dentro da sua propria slice.",
+  "emailVerified": "Email verificado",
+  "verified": "Verificado",
+  "pending": "Pendente",
+  "sessionExpires": "Sessao expira",
+  "signedInAt": "Sessao iniciada em",
+  "primaryRoute": "Rota principal da app",
+  "backToDashboard": "Voltar ao dashboard",
+  "signOut": "Terminar sessao"
+}

@@ -1,0 +1,13 @@
+{
+  "eyebrow": "Account",
+  "title": "Server-rendered account",
+  "description": "This route reads the Better Auth session on the server and keeps account behavior isolated inside its own slice.",
+  "emailVerified": "Email verified",
+  "verified": "Verified",
+  "pending": "Pending",
+  "sessionExpires": "Session expires",
+  "signedInAt": "Signed in at",
+  "primaryRoute": "Primary app route",
+  "backToDashboard": "Back to dashboard",
+  "signOut": "Sign out"
+}

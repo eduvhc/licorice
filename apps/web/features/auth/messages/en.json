@@ -1,0 +1,44 @@
+{
+  "brand": "Licorice",
+  "genericError": "Authentication failed.",
+  "social": {
+    "continueWith": "Continue with",
+    "providerOrEmail": "Continue with a social provider or use your email",
+    "divider": "OR",
+    "providers": {
+      "apple": "Apple",
+      "discord": "Discord",
+      "github": "GitHub",
+      "google": "Google"
+    }
+  },
+  "signIn": {
+    "title": "Welcome back",
+    "emailDescription": "Sign in with your email and password",
+    "submit": "Login",
+    "switchPrompt": "Don't have an account?",
+    "switchCta": "Sign up"
+  },
+  "signUp": {
+    "title": "Create your account",
+    "emailDescription": "Sign up with your email and password",
+    "submit": "Create account",
+    "switchPrompt": "Already have an account?",
+    "switchCta": "Sign in"
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "namePlaceholder": "Jane Doe",
+    "emailPlaceholder": "m@example.com",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "legal": {
+    "prefix": "By continuing, you agree to our",
+    "conjunction": "and",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  }
+}

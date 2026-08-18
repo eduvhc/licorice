@@ -1,0 +1,19 @@
+{
+  "brand": "Licorice Starter",
+  "brandSubline": "Fast SaaS foundation",
+  "nav": {
+    "why": "Why it works",
+    "builtIns": "Built-ins",
+    "agents": "For agents"
+  },
+  "themeToggle": "Toggle theme",
+  "footer": {
+    "description": "Generic SaaS template with built-in auth, account flows, and agent-friendly architecture.",
+    "links": {
+      "account": "Account",
+      "login": "Login",
+      "create": "Create workspace",
+      "app": "Starter app"
+    }
+  }
+}

@@ -1,4 +1,17 @@
-import { nextJsConfig } from "@workspace/eslint-config/next-js"
+import { defineConfig, globalIgnores } from "eslint/config"
+import nextVitals from "eslint-config-next/core-web-vitals"
+import nextTs from "eslint-config-next/typescript"
+import prettier from "eslint-config-prettier/flat"
 
-/** @type {import("eslint").Linter.Config} */
-export default nextJsConfig
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
+    },
+  },
+  prettier,
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+])

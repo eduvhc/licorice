@@ -1,0 +1,48 @@
+{
+  "badge": "Legal",
+  "terms": {
+    "title": "Terms of Service",
+    "description": "Starter agreement template for SaaS products built on Licorice. Adapt this with legal counsel before production use.",
+    "sections": [
+      {
+        "title": "Use of the service",
+        "body": "You may use the service according to your subscription level and internal business needs. You are responsible for how your team, contractors, and automated agents access the workspace."
+      },
+      {
+        "title": "Accounts and security",
+        "body": "You must keep credentials secure and notify the operator of unauthorized access. You remain responsible for activity performed through your account unless the issue was caused by the operator."
+      },
+      {
+        "title": "Acceptable use",
+        "body": "You may not use the product to break laws, abuse infrastructure, interfere with other tenants, or upload malicious code. AI automations must follow the same rules as human users."
+      },
+      {
+        "title": "Changes and availability",
+        "body": "The product may evolve over time. Features can be improved, renamed, or removed with reasonable notice when appropriate. Availability goals should be defined in your commercial agreement, not only in this template."
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "Starter privacy template for SaaS products built on Licorice. Review with legal counsel before production use.",
+    "sections": [
+      {
+        "title": "What we collect",
+        "body": "We may collect account details, authentication data, product usage events, and operational metadata needed to secure, maintain, and improve the service."
+      },
+      {
+        "title": "Why we process data",
+        "body": "We process data to provide the service, authenticate users, prevent abuse, support customers, send transactional communications, and understand product reliability."
+      },
+      {
+        "title": "How data is shared",
+        "body": "Data may be shared with subprocessors that help operate the service, such as infrastructure, email, analytics, and support tooling providers. We do not sell personal data."
+      },
+      {
+        "title": "Retention and rights",
+        "body": "We retain data only as long as necessary for operational, contractual, or legal reasons. Depending on jurisdiction, users may request access, correction, export, or deletion of personal data."
+      }
+    ]
+  },
+  "back": "Back to starter"
+}
