@@ -2,7 +2,7 @@
   "badge": "Legal",
   "terms": {
     "title": "Terms of Service",
-    "description": "Starter agreement template for SaaS products built on Licorice. Adapt this with legal counsel before production use.",
+    "description": "Starter agreement template for Alambique. Adapt this with legal counsel before production use.",
     "sections": [
       {
         "title": "Use of the service",
@@ -24,7 +24,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "description": "Starter privacy template for SaaS products built on Licorice. Review with legal counsel before production use.",
+    "description": "Starter privacy template for Alambique. Review with legal counsel before production use.",
     "sections": [
       {
         "title": "What we collect",

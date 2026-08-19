@@ -1,0 +1,44 @@
+{
+  "title": "Recipes",
+  "description": "Each recipe combines inventory items into a final bottle, with cost calculated from item prices.",
+  "newRecipe": "New recipe",
+  "editRecipe": "Edit recipe",
+  "deleteRecipe": "Delete recipe",
+  "empty": "No recipes yet. Create the first one to start costing your liqueurs.",
+  "fields": {
+    "name": "Name",
+    "namePlaceholder": "Limoncello",
+    "description": "Description",
+    "descriptionPlaceholder": "A short note about this recipe…",
+    "items": "Ingredients",
+    "addItem": "Add ingredient",
+    "item": "Item",
+    "selectItem": "Select an item",
+    "quantity": "Quantity",
+    "remove": "Remove",
+    "total": "Total cost"
+  },
+  "table": {
+    "name": "Name",
+    "items": "Ingredients",
+    "total": "Total cost",
+    "actions": "Actions"
+  },
+  "overview": {
+    "recipes": "Recipes",
+    "items": "Inventory items",
+    "inventoryValue": "Inventory value",
+    "avgCost": "Average recipe cost",
+    "recentRecipes": "Latest recipes",
+    "viewAll": "View all recipes"
+  },
+  "errors": {
+    "invalid": "Please check the form fields.",
+    "noItems": "Add at least one ingredient.",
+    "server": "Could not save the recipe. Try again."
+  },
+  "toast": {
+    "saved": "Recipe saved.",
+    "deleted": "Recipe deleted."
+  }
+}

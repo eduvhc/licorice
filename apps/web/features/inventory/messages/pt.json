@@ -1,0 +1,44 @@
+{
+  "title": "Inventário",
+  "description": "Gerencie os itens que compra e o preço unitário. As receitas tiram o custo daqui.",
+  "newItem": "Novo item",
+  "editItem": "Editar item",
+  "deleteItem": "Eliminar item",
+  "empty": "Ainda não há itens. Adicione o primeiro item para começar a custear receitas.",
+  "fields": {
+    "name": "Nome",
+    "namePlaceholder": "Limões",
+    "unit": "Unidade",
+    "unitPlaceholder": "un, ml, g…",
+    "price": "Preço (EUR)",
+    "pricePlaceholder": "0,99",
+    "type": "Tipo",
+    "selectType": "Selecione um tipo"
+  },
+  "types": {
+    "base": "Bebida base",
+    "drink": "Bebida",
+    "fruit": "Fruta",
+    "accessory": "Acessório",
+    "other": "Outro"
+  },
+  "filter": {
+    "all": "Todos",
+    "label": "Filtrar por tipo"
+  },
+  "table": {
+    "name": "Nome",
+    "unit": "Unidade",
+    "type": "Tipo",
+    "price": "Preço unitário",
+    "actions": "Ações"
+  },
+  "errors": {
+    "invalid": "Verifique os campos do formulário.",
+    "server": "Não foi possível guardar o item. Tente novamente."
+  },
+  "toast": {
+    "saved": "Item guardado.",
+    "deleted": "Item eliminado."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Inventory",
+  "description": "Manage the items you buy and their unit price. Recipes pull their cost from here.",
+  "newItem": "New item",
+  "editItem": "Edit item",
+  "deleteItem": "Delete item",
+  "empty": "No items yet. Add your first item to start costing recipes.",
+  "fields": {
+    "name": "Name",
+    "namePlaceholder": "Lemons",
+    "unit": "Unit",
+    "unitPlaceholder": "un, ml, g…",
+    "price": "Price (EUR)",
+    "pricePlaceholder": "0.99",
+    "type": "Type",
+    "selectType": "Select a type"
+  },
+  "types": {
+    "base": "Base drink",
+    "drink": "Drink",
+    "fruit": "Fruit",
+    "accessory": "Accessory",
+    "other": "Other"
+  },
+  "filter": {
+    "all": "All",
+    "label": "Filter by type"
+  },
+  "table": {
+    "name": "Name",
+    "unit": "Unit",
+    "type": "Type",
+    "price": "Unit price",
+    "actions": "Actions"
+  },
+  "errors": {
+    "invalid": "Please check the form fields.",
+    "server": "Could not save the item. Try again."
+  },
+  "toast": {
+    "saved": "Item saved.",
+    "deleted": "Item deleted."
+  }
+}

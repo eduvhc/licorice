@@ -12,6 +12,12 @@ export default defineConfig([
       reportUnusedDisableDirectives: "error",
     },
   },
+  {
+    files: ["db/migrations/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
   prettier,
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ])

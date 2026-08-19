@@ -2,7 +2,7 @@
   "badge": "Legal",
   "terms": {
     "title": "Termos de Servico",
-    "description": "Template inicial de acordo para produtos SaaS construidos com Licorice. Deve ser revisto com apoio juridico antes de uso em producao.",
+    "description": "Template inicial de acordo para o Alambique. Deve ser revisto com apoio juridico antes de uso em producao.",
     "sections": [
       {
         "title": "Uso do servico",
@@ -24,7 +24,7 @@
   },
   "privacy": {
     "title": "Politica de Privacidade",
-    "description": "Template inicial de privacidade para produtos SaaS construidos com Licorice. Deve ser revisto com apoio juridico antes de uso em producao.",
+    "description": "Template inicial de privacidade para o Alambique. Deve ser revisto com apoio juridico antes de uso em producao.",
     "sections": [
       {
         "title": "O que recolhemos",

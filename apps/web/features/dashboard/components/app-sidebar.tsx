@@ -1,134 +1,37 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { useTranslations } from "next-intl"
 
-import { NavDocuments } from "./nav-documents"
-import { NavMain } from "./nav-main"
-import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/sidebar"
 import {
-  ChartBarIcon,
-  CircleHelpIcon,
+  BookOpenIcon,
   CommandIcon,
-  DatabaseIcon,
-  FileChartColumnIcon,
-  FileIcon,
-  FolderIcon,
   LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
+  PackageIcon,
   Settings2Icon,
-  UsersIcon,
 } from "lucide-react"
 
-import { Link } from "@/i18n/navigation"
+import { Link as I18nLink } from "@/i18n/navigation"
+import { usePathname } from "@/i18n/navigation"
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: (
-        <LayoutDashboardIcon
-        />
-      ),
-    },
-    {
-      title: "Lifecycle",
-      url: "/dashboard",
-      icon: (
-        <ListIcon
-        />
-      ),
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard",
-      icon: (
-        <ChartBarIcon
-        />
-      ),
-    },
-    {
-      title: "Projects",
-      url: "/dashboard",
-      icon: (
-        <FolderIcon
-        />
-      ),
-    },
-    {
-      title: "Team",
-      url: "/dashboard",
-      icon: (
-        <UsersIcon
-        />
-      ),
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/dashboard",
-      icon: (
-        <Settings2Icon
-        />
-      ),
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: (
-        <CircleHelpIcon
-        />
-      ),
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: (
-        <SearchIcon
-        />
-      ),
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: (
-        <DatabaseIcon
-        />
-      ),
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: (
-        <FileChartColumnIcon
-        />
-      ),
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: (
-        <FileIcon
-        />
-      ),
-    },
-  ],
-}
+const mainNav = [
+  { key: "overview", href: "/dashboard", icon: LayoutDashboardIcon },
+  { key: "recipes", href: "/dashboard/recipes", icon: BookOpenIcon },
+  { key: "inventory", href: "/dashboard/inventory", icon: PackageIcon },
+] as const
 
 export function AppSidebar({
   user,
@@ -141,18 +44,7 @@ export function AppSidebar({
   }
 }) {
   const t = useTranslations("dashboard")
-  const navMainTitles = t.raw("navMain") as string[]
-  const navSecondaryTitles = t.raw("navSecondary") as string[]
-  const navMain = data.navMain.map((item, index) => ({
-    ...item,
-    title: navMainTitles[index] ?? item.title,
-    url: "/dashboard",
-  }))
-  const navSecondary = data.navSecondary.map((item, index) => ({
-    ...item,
-    title: navSecondaryTitles[index] ?? item.title,
-    url: index === 0 ? "/account" : "/dashboard",
-  }))
+  const pathname = usePathname()
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -161,7 +53,7 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<Link href="/" />}
+              render={<I18nLink href="/" />}
             >
               <CommandIcon className="size-5!" />
               <span className="text-base font-semibold">{t("brand")}</span>
@@ -170,9 +62,36 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={navSecondary} className="mt-auto" />
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {mainNav.map((item) => (
+                <SidebarMenuItem key={item.key}>
+                  <SidebarMenuButton
+                    isActive={pathname === item.href}
+                    tooltip={t(`nav.${item.key}`)}
+                    render={<Link href={item.href} />}
+                  >
+                    <item.icon />
+                    <span>{t(`nav.${item.key}`)}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton render={<Link href="/account" />}>
+                  <Settings2Icon />
+                  <span>{t("manageAccount")}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

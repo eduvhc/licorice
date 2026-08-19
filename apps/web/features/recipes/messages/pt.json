@@ -1,0 +1,44 @@
+{
+  "title": "Receitas",
+  "description": "Cada receita combina itens do inventário numa garrafa final, com o custo calculado a partir dos preços dos itens.",
+  "newRecipe": "Nova receita",
+  "editRecipe": "Editar receita",
+  "deleteRecipe": "Eliminar receita",
+  "empty": "Ainda não há receitas. Crie a primeira para começar a custear os seus licores.",
+  "fields": {
+    "name": "Nome",
+    "namePlaceholder": "Limoncello",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Uma nota curta sobre esta receita…",
+    "items": "Ingredientes",
+    "addItem": "Adicionar ingrediente",
+    "item": "Item",
+    "selectItem": "Selecione um item",
+    "quantity": "Quantidade",
+    "remove": "Remover",
+    "total": "Custo total"
+  },
+  "table": {
+    "name": "Nome",
+    "items": "Ingredientes",
+    "total": "Custo total",
+    "actions": "Ações"
+  },
+  "overview": {
+    "recipes": "Receitas",
+    "items": "Itens no inventário",
+    "inventoryValue": "Valor do inventário",
+    "avgCost": "Custo médio por receita",
+    "recentRecipes": "Últimas receitas",
+    "viewAll": "Ver todas as receitas"
+  },
+  "errors": {
+    "invalid": "Verifique os campos do formulário.",
+    "noItems": "Adicione pelo menos um ingrediente.",
+    "server": "Não foi possível guardar a receita. Tente novamente."
+  },
+  "toast": {
+    "saved": "Receita guardada.",
+    "deleted": "Receita eliminada."
+  }
+}

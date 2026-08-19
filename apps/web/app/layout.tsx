@@ -15,8 +15,8 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Licorice",
-  description: "Idiomatic Next.js monorepo template with vertical slice architecture.",
+  title: "Alambique",
+  description: "Gestão de receitas de licores e inventário.",
 }
 
 export default async function RootLayout({

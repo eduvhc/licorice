@@ -68,9 +68,18 @@ In this template:
 - `features/auth/components/*`: auth screens and forms
 - `features/auth/lib/*`: slice-local types and provider config
 - `features/auth/server/*`: server actions and route/session guards
-- `features/landing/*`: separate marketing/landing surface with its own composition
-- `features/dashboard/data/*`: slice-local mock data
+- `features/inventory/*`: backoffice items and unit prices
+- `features/recipes/*`: recipes with ingredients and computed cost
 - `features/<slice>/messages/*.json`: slice-local translations (`en`, `pt`)
+
+## Alambique
+
+The app product: manage liqueur recipes and inventory.
+
+- Items: name, unit (`un`, `ml`, `g`…), unit price in EUR (stored as cents)
+- Recipes: name, description, and ingredient lines (item + quantity); total cost is computed from item prices
+- SQLite database at `apps/web/app.db` (schema via `db/migrations`, see below)
+- Backoffice routes: `/dashboard` (overview), `/dashboard/recipes`, `/dashboard/inventory`
 
 ## i18n
 
@@ -94,6 +103,25 @@ The template ships with:
 - Kysely-backed SQLite database at `apps/web/better-auth.db`
 - protected `/dashboard`
 - login and sign-up pages wired to Better Auth
+
+## Database & migrations
+
+Kysely migrations via the official `kysely-ctl` CLI (dev dependency, configured in `apps/web`):
+
+- `apps/web/kysely.config.ts`: dialect + `db/migrations` folder
+- `apps/web/db/migrations/*.ts`: migration files with `up`/`down` (frozen in time, use `Kysely<any>`)
+- applied migrations are tracked in the `kysely_migration` table
+- `apps/web/lib/app-db.ts`: app database instance (`app.db`) + table types
+
+Workflow (from `apps/web`):
+
+```bash
+bun run db:migrate         # kysely migrate:latest
+bun run db:migrate:make    # kysely migrate:make <name>
+bun run db:migrate:list    # kysely migrate:list
+```
+
+To add a table: create a migration, add its types to `lib/app-db.ts`, then run `bun run db:migrate`.
 
 ## Adding shadcn components
 
