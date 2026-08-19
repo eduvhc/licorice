@@ -4,10 +4,13 @@ import { revalidatePath } from "next/cache"
 
 import { appDb } from "@/lib/app-db"
 import { itemExists } from "@/features/inventory/server/queries"
+import { ACTION_ERROR, type ActionErrorCode } from "@/shared/lib/action-result"
 
 import { recipeInputSchema } from "../lib/validation"
 
-export type ActionResult = { ok: true } | { ok: false; error: "invalid" | "server" }
+export type ActionResult =
+  | { ok: true }
+  | { ok: false; error: Extract<ActionErrorCode, "invalid" | "server"> }
 
 export async function saveRecipeAction(
   input: unknown,
@@ -16,13 +19,13 @@ export async function saveRecipeAction(
   const parsed = recipeInputSchema.safeParse(input)
 
   if (!parsed.success) {
-    return { ok: false, error: "invalid" }
+    return { ok: false, error: ACTION_ERROR.invalid }
   }
 
   try {
     for (const item of parsed.data.items) {
       if (!(await itemExists(item.itemId))) {
-        return { ok: false, error: "invalid" }
+        return { ok: false, error: ACTION_ERROR.invalid }
       }
     }
 
@@ -32,14 +35,25 @@ export async function saveRecipeAction(
       if (recipeId) {
         await trx
           .updateTable("recipes")
-          .set({ name: parsed.data.name, description: parsed.data.description })
+          .set({
+            name: parsed.data.name,
+            description: parsed.data.description,
+            yield_ml: parsed.data.yieldMl,
+          })
           .where("id", "=", recipeId)
           .execute()
-        await trx.deleteFrom("recipe_items").where("recipe_id", "=", recipeId).execute()
+        await trx
+          .deleteFrom("recipe_items")
+          .where("recipe_id", "=", recipeId)
+          .execute()
       } else {
         const inserted = await trx
           .insertInto("recipes")
-          .values({ name: parsed.data.name, description: parsed.data.description })
+          .values({
+            name: parsed.data.name,
+            description: parsed.data.description,
+            yield_ml: parsed.data.yieldMl,
+          })
           .returning("id")
           .executeTakeFirstOrThrow()
         recipeId = inserted.id
@@ -60,15 +74,16 @@ export async function saveRecipeAction(
     revalidatePath("/", "layout")
     return { ok: true }
   } catch {
-    return { ok: false, error: "server" }
+    return { ok: false, error: ACTION_ERROR.server }
   }
 }
 
 export async function deleteRecipeAction(id: number): Promise<ActionResult> {
-  try {    await appDb.deleteFrom("recipes").where("id", "=", id).execute()
+  try {
+    await appDb.deleteFrom("recipes").where("id", "=", id).execute()
     revalidatePath("/", "layout")
     return { ok: true }
   } catch {
-    return { ok: false, error: "server" }
+    return { ok: false, error: ACTION_ERROR.server }
   }
 }

@@ -35,6 +35,7 @@
   },
   "errors": {
     "invalid": "Verifique os campos do formulário.",
+    "inUse": "Não é possível eliminar — ainda usado em:",
     "server": "Não foi possível guardar o item. Tente novamente."
   },
   "toast": {

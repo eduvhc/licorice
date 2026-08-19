@@ -16,7 +16,10 @@ export function SettingsTabs() {
       <TabsTrigger
         value="units"
         onClick={() =>
-          router.replace({ pathname, query: { tab: "units" } }, { scroll: false })
+          router.replace(
+            { pathname, query: { tab: "units" } },
+            { scroll: false }
+          )
         }
       >
         {t("tabs.units")}
@@ -24,10 +27,24 @@ export function SettingsTabs() {
       <TabsTrigger
         value="tags"
         onClick={() =>
-          router.replace({ pathname, query: { tab: "tags" } }, { scroll: false })
+          router.replace(
+            { pathname, query: { tab: "tags" } },
+            { scroll: false }
+          )
         }
       >
         {t("tabs.tags")}
+      </TabsTrigger>
+      <TabsTrigger
+        value="bottles"
+        onClick={() =>
+          router.replace(
+            { pathname, query: { tab: "bottles" } },
+            { scroll: false }
+          )
+        }
+      >
+        {t("tabs.bottles")}
       </TabsTrigger>
     </TabsList>
   )

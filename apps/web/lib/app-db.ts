@@ -26,6 +26,7 @@ export interface RecipesTable {
   id: Generated<number>
   name: string
   description: string
+  yield_ml: number
 }
 
 export interface RecipeItemsTable {
@@ -35,12 +36,20 @@ export interface RecipeItemsTable {
   quantity: number
 }
 
+export interface BottlesTable {
+  id: Generated<number>
+  name: string
+  size_ml: number
+  price_cents: number
+}
+
 type AppSchema = {
   items: ItemsTable
   recipes: RecipesTable
   recipe_items: RecipeItemsTable
   tags: TagsTable
   units: UnitsTable
+  bottles: BottlesTable
 }
 
 const sqlite = new Database(path.join(process.cwd(), "app.db"))

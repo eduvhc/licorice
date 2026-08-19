@@ -3,10 +3,18 @@
 import { revalidatePath } from "next/cache"
 
 import { appDb } from "@/lib/app-db"
+import { ACTION_ERROR, type ActionErrorCode } from "@/shared/lib/action-result"
 
 import { itemInputSchema } from "../lib/validation"
 
-export type ActionResult = { ok: true } | { ok: false; error: "invalid" | "server" }
+export type ActionResult =
+  | { ok: true }
+  | { ok: false; error: Extract<ActionErrorCode, "invalid" | "server"> }
+  | {
+      ok: false
+      error: Extract<ActionErrorCode, "inUse">
+      recipes: { id: number; name: string }[]
+    }
 
 function revalidate() {
   revalidatePath("/", "layout")
@@ -19,7 +27,7 @@ export async function saveItemAction(
   const parsed = itemInputSchema.safeParse(input)
 
   if (!parsed.success) {
-    return { ok: false, error: "invalid" }
+    return { ok: false, error: ACTION_ERROR.invalid }
   }
 
   try {
@@ -37,7 +45,7 @@ export async function saveItemAction(
     ])
 
     if (!tag || !unit) {
-      return { ok: false, error: "invalid" }
+      return { ok: false, error: ACTION_ERROR.invalid }
     }
 
     const values = {
@@ -55,7 +63,7 @@ export async function saveItemAction(
         .executeTakeFirst()
 
       if (Number(result.numUpdatedRows) === 0) {
-        return { ok: false, error: "server" }
+        return { ok: false, error: ACTION_ERROR.server }
       }
     } else {
       await appDb.insertInto("items").values(values).execute()
@@ -64,16 +72,29 @@ export async function saveItemAction(
     revalidate()
     return { ok: true }
   } catch {
-    return { ok: false, error: "server" }
+    return { ok: false, error: ACTION_ERROR.server }
   }
 }
 
 export async function deleteItemAction(id: number): Promise<ActionResult> {
   try {
+    const recipes = await appDb
+      .selectFrom("recipe_items as ri")
+      .innerJoin("recipes as r", "r.id", "ri.recipe_id")
+      .select(["r.id", "r.name"])
+      .distinct()
+      .where("ri.item_id", "=", id)
+      .orderBy("r.name")
+      .execute()
+
+    if (recipes.length > 0) {
+      return { ok: false, error: ACTION_ERROR.inUse, recipes }
+    }
+
     await appDb.deleteFrom("items").where("id", "=", id).execute()
     revalidate()
     return { ok: true }
   } catch {
-    return { ok: false, error: "server" }
+    return { ok: false, error: ACTION_ERROR.server }
   }
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useTranslations } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
@@ -25,8 +25,12 @@ import { cn } from "@workspace/ui/lib/utils"
 import { EllipsisVerticalIcon, Trash2Icon } from "lucide-react"
 
 import { isTagColor, tagColorDot } from "../lib/tag-colors"
-import { deleteTagAction, deleteUnitAction } from "../server/actions"
-import type { Tag, Unit } from "../server/queries"
+import {
+  deleteBottleAction,
+  deleteTagAction,
+  deleteUnitAction,
+} from "../server/actions"
+import type { Bottle, Tag, Unit } from "../server/queries"
 import { EditEntityButton } from "./entity-dialogs"
 
 type Usage = Map<number, number>
@@ -42,14 +46,18 @@ function DeleteMenu({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="ghost" size="icon" className="size-8 text-muted-foreground" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground"
+          />
         }
       >
         <EllipsisVerticalIcon />
         <span className="sr-only">{label}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem variant="destructive" onSelect={onDelete}>
+        <DropdownMenuItem variant="destructive" onClick={onDelete}>
           <Trash2Icon />
           {label}
         </DropdownMenuItem>
@@ -176,11 +184,16 @@ function TagsSection({ tags, usage }: { tags: Tag[]; usage: Usage }) {
               className={pendingId === tag.id ? "opacity-50" : undefined}
             >
               <TableCell>
-                <Badge variant="outline" className="gap-1.5 text-muted-foreground">
+                <Badge
+                  variant="outline"
+                  className="gap-1.5 text-muted-foreground"
+                >
                   <span
                     className={cn(
                       "size-1.5 rounded-full",
-                      isTagColor(tag.color) ? tagColorDot[tag.color] : "bg-zinc-500"
+                      isTagColor(tag.color)
+                        ? tagColorDot[tag.color]
+                        : "bg-zinc-500"
                     )}
                   />
                   {tag.name}
@@ -206,4 +219,79 @@ function TagsSection({ tags, usage }: { tags: Tag[]; usage: Usage }) {
   )
 }
 
-export { UnitsSection, TagsSection }
+function BottlesSection({ bottles }: { bottles: Bottle[] }) {
+  const t = useTranslations("settings")
+  const format = useFormatter()
+  const router = useRouter()
+  const [pendingId, setPendingId] = React.useState<number | null>(null)
+  const [, startTransition] = React.useTransition()
+
+  if (bottles.length === 0) {
+    return <Empty message={t("bottles.empty")} />
+  }
+
+  function handleDelete(id: number) {
+    setPendingId(id)
+    startTransition(async () => {
+      const result = await deleteBottleAction(id)
+      setPendingId(null)
+
+      if (!result.ok) {
+        toast.error(t(`errors.${result.error}`))
+        return
+      }
+
+      toast.success(t("toast.deleted"))
+      router.refresh()
+    })
+  }
+
+  return (
+    <div className="overflow-hidden rounded-lg border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t("bottles.table.name")}</TableHead>
+            <TableHead className="w-24">{t("bottles.table.size")}</TableHead>
+            <TableHead className="w-28 text-right">
+              {t("bottles.table.price")}
+            </TableHead>
+            <TableHead className="w-12">
+              <span className="sr-only">{t("bottles.table.actions")}</span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {bottles.map((bottle) => (
+            <TableRow
+              key={bottle.id}
+              className={pendingId === bottle.id ? "opacity-50" : undefined}
+            >
+              <TableCell className="font-medium">{bottle.name}</TableCell>
+              <TableCell className="text-muted-foreground tabular-nums">
+                {bottle.sizeMl} ml
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground tabular-nums">
+                {format.number(bottle.priceCents / 100, {
+                  style: "currency",
+                  currency: "EUR",
+                })}
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center justify-end gap-1">
+                  <EditEntityButton kind="bottle" bottle={bottle} />
+                  <DeleteMenu
+                    label={t("bottles.delete")}
+                    onDelete={() => handleDelete(bottle.id)}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+export { UnitsSection, TagsSection, BottlesSection }

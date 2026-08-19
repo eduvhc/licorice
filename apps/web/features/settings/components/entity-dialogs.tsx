@@ -29,11 +29,12 @@ import { PencilIcon, PlusIcon } from "lucide-react"
 
 import { TAG_COLORS, tagColorDot, type TagColor } from "../lib/tag-colors"
 import {
+  saveBottleAction,
   saveTagAction,
   saveUnitAction,
   type SettingsActionResult,
 } from "../server/actions"
-import type { Tag, Unit } from "../server/queries"
+import type { Bottle, Tag, Unit } from "../server/queries"
 
 function useSave(
   action: (input: unknown, id?: number) => Promise<SettingsActionResult>,
@@ -130,7 +131,10 @@ function TagForm({ tag, onDone }: { tag?: Tag; onDone: () => void }) {
           <Select
             value={color}
             onValueChange={(value) => setColor(value as TagColor)}
-            items={TAG_COLORS.map((option) => ({ label: option, value: option }))}
+            items={TAG_COLORS.map((option) => ({
+              label: option,
+              value: option,
+            }))}
           >
             <SelectTrigger id="tag-color" className="w-full">
               <SelectValue />
@@ -139,7 +143,12 @@ function TagForm({ tag, onDone }: { tag?: Tag; onDone: () => void }) {
               {TAG_COLORS.map((option) => (
                 <SelectItem key={option} value={option}>
                   <span className="flex items-center gap-2">
-                    <span className={cn("size-2.5 rounded-full", tagColorDot[option])} />
+                    <span
+                      className={cn(
+                        "size-2.5 rounded-full",
+                        tagColorDot[option]
+                      )}
+                    />
                     <span className="capitalize">{option}</span>
                   </span>
                 </SelectItem>
@@ -156,14 +165,104 @@ function TagForm({ tag, onDone }: { tag?: Tag; onDone: () => void }) {
   )
 }
 
-function NewEntityButton({
-  kind,
+function BottleForm({
+  bottle,
+  onDone,
 }: {
-  kind: "unit" | "tag"
+  bottle?: Bottle
+  onDone: () => void
 }) {
   const t = useTranslations("settings")
+  const { error, run } = useSave(saveBottleAction, onDone)
+
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const name = String(formData.get("name") ?? "")
+        const sizeMl = Number.parseInt(String(formData.get("sizeMl") ?? ""), 10)
+        const price = Number.parseFloat(
+          String(formData.get("price") ?? "").replace(",", ".")
+        )
+
+        if (
+          !name.trim() ||
+          Number.isNaN(sizeMl) ||
+          Number.isNaN(price) ||
+          price < 0
+        ) {
+          return
+        }
+
+        run({ name, sizeMl, priceCents: Math.round(price * 100) }, bottle?.id)
+      }}
+    >
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="bottle-name">
+            {t("bottles.fields.name")}
+          </FieldLabel>
+          <Input
+            id="bottle-name"
+            name="name"
+            placeholder={t("bottles.fields.namePlaceholder")}
+            defaultValue={bottle?.name}
+            required
+            maxLength={60}
+            autoFocus
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="bottle-size">
+            {t("bottles.fields.sizeMl")}
+          </FieldLabel>
+          <Input
+            id="bottle-size"
+            name="sizeMl"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            defaultValue={bottle?.sizeMl}
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="bottle-price">
+            {t("bottles.fields.price")}
+          </FieldLabel>
+          <Input
+            id="bottle-price"
+            name="price"
+            type="text"
+            inputMode="decimal"
+            placeholder={t("bottles.fields.pricePlaceholder")}
+            defaultValue={
+              bottle ? (bottle.priceCents / 100).toFixed(2) : undefined
+            }
+            required
+          />
+        </Field>
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      </FieldGroup>
+      <DialogFooter className="mt-6">
+        <Button type="submit">
+          {t(bottle ? "bottles.edit" : "bottles.new")}
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+function NewEntityButton({ kind }: { kind: "unit" | "tag" | "bottle" }) {
+  const t = useTranslations("settings")
   const [open, setOpen] = React.useState(false)
-  const label = kind === "unit" ? t("units.new") : t("tags.new")
+  const label =
+    kind === "unit"
+      ? t("units.new")
+      : kind === "tag"
+        ? t("tags.new")
+        : t("bottles.new")
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -177,8 +276,10 @@ function NewEntityButton({
         </DialogHeader>
         {kind === "unit" ? (
           <UnitForm onDone={() => setOpen(false)} />
-        ) : (
+        ) : kind === "tag" ? (
           <TagForm onDone={() => setOpen(false)} />
+        ) : (
+          <BottleForm onDone={() => setOpen(false)} />
         )}
       </DialogContent>
     </Dialog>
@@ -189,20 +290,31 @@ function EditEntityButton({
   kind,
   unit,
   tag,
+  bottle,
 }: {
-  kind: "unit" | "tag"
+  kind: "unit" | "tag" | "bottle"
   unit?: Unit
   tag?: Tag
+  bottle?: Bottle
 }) {
   const t = useTranslations("settings")
   const [open, setOpen] = React.useState(false)
-  const label = kind === "unit" ? t("units.edit") : t("tags.edit")
+  const label =
+    kind === "unit"
+      ? t("units.edit")
+      : kind === "tag"
+        ? t("tags.edit")
+        : t("bottles.edit")
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="icon" className="size-8 text-muted-foreground" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground"
+          />
         }
       >
         <PencilIcon />
@@ -211,12 +323,16 @@ function EditEntityButton({
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{label}</DialogTitle>
-          <DialogDescription>{unit?.name ?? tag?.name}</DialogDescription>
+          <DialogDescription>
+            {unit?.name ?? tag?.name ?? bottle?.name}
+          </DialogDescription>
         </DialogHeader>
         {kind === "unit" ? (
           <UnitForm unit={unit} onDone={() => setOpen(false)} />
-        ) : (
+        ) : kind === "tag" ? (
           <TagForm tag={tag} onDone={() => setOpen(false)} />
+        ) : (
+          <BottleForm bottle={bottle} onDone={() => setOpen(false)} />
         )}
       </DialogContent>
     </Dialog>

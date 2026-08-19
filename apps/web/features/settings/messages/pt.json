@@ -3,7 +3,8 @@
   "description": "Gira as unidades e etiquetas usadas nos itens do inventário.",
   "tabs": {
     "units": "Unidades",
-    "tags": "Etiquetas"
+    "tags": "Etiquetas",
+    "bottles": "Garrafas"
   },
   "units": {
     "title": "Unidades",
@@ -35,6 +36,26 @@
     "table": {
       "name": "Nome",
       "usage": "Itens",
+      "actions": "Ações"
+    }
+  },
+  "bottles": {
+    "title": "Garrafas",
+    "new": "Nova garrafa",
+    "edit": "Editar garrafa",
+    "delete": "Eliminar garrafa",
+    "empty": "Ainda não há garrafas.",
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "Vidro 500ml",
+      "sizeMl": "Tamanho (ml)",
+      "price": "Preço",
+      "pricePlaceholder": "0.50"
+    },
+    "table": {
+      "name": "Nome",
+      "size": "Tamanho",
+      "price": "Preço",
       "actions": "Ações"
     }
   },

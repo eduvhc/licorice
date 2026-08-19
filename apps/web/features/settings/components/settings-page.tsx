@@ -6,9 +6,9 @@ import { Tabs, TabsContent } from "@workspace/ui/components/tabs"
 import { appDb } from "@/lib/app-db"
 
 import { NewEntityButton } from "./entity-dialogs"
-import { TagsSection, UnitsSection } from "./entity-table"
+import { BottlesSection, TagsSection, UnitsSection } from "./entity-table"
 import { SettingsTabs } from "./settings-tabs"
-import { listTags, listUnits } from "../server/queries"
+import { listBottles, listTags, listUnits } from "../server/queries"
 
 async function buildUsage() {
   const rows = await appDb
@@ -28,14 +28,15 @@ async function buildUsage() {
 }
 
 type SettingsPageProps = {
-  tab: "units" | "tags"
+  tab: "units" | "tags" | "bottles"
 }
 
 async function SettingsPage({ tab }: SettingsPageProps) {
   const t = await getTranslations("settings")
-  const [units, tags, usage] = await Promise.all([
+  const [units, tags, bottles, usage] = await Promise.all([
     listUnits(),
     listTags(),
+    listBottles(),
     buildUsage(),
   ])
 
@@ -43,7 +44,9 @@ async function SettingsPage({ tab }: SettingsPageProps) {
     <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          {t("description")}
+        </p>
       </div>
 
       <Tabs value={tab} className="gap-6">
@@ -65,6 +68,16 @@ async function SettingsPage({ tab }: SettingsPageProps) {
           <Card>
             <CardContent className="pt-6">
               <TagsSection tags={tags} usage={usage.tagUsage} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="bottles" className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <NewEntityButton kind="bottle" />
+          </div>
+          <Card>
+            <CardContent className="pt-6">
+              <BottlesSection bottles={bottles} />
             </CardContent>
           </Card>
         </TabsContent>

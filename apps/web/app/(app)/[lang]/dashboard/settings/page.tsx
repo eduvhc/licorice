@@ -13,10 +13,16 @@ type SettingsRouteProps = {
   }>
 }
 
-export default async function Page({ params, searchParams }: SettingsRouteProps) {
+export default async function Page({
+  params,
+  searchParams,
+}: SettingsRouteProps) {
   const { lang } = await params
   if (!hasLocale(routing.locales, lang)) notFound()
   const { tab } = await searchParams
 
-  return <SettingsPage tab={tab === "tags" ? "tags" : "units"} />
+  const resolvedTab =
+    tab === "tags" ? "tags" : tab === "bottles" ? "bottles" : "units"
+
+  return <SettingsPage tab={resolvedTab} />
 }

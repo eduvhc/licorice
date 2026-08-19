@@ -15,11 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog"
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
+import { Field, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import {
   Select,
@@ -36,6 +32,7 @@ import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { saveRecipeAction } from "../server/actions"
+import { DEFAULT_YIELD_ML } from "../lib/pricing"
 import type { RecipeWithItems } from "../server/queries"
 
 type IngredientRow = {
@@ -91,14 +88,20 @@ function RecipeForm({
   function addRow() {
     setRows((current) => [
       ...current,
-      { key: `row-${current.length}-${Date.now()}`, itemId: null, quantity: "1" },
+      {
+        key: `row-${current.length}-${Date.now()}`,
+        itemId: null,
+        quantity: "1",
+      },
     ])
   }
 
   function removeRow(key: string) {
     setRows((current) => {
       const next = current.filter((row) => row.key !== key)
-      return next.length > 0 ? next : [{ key: "row-0", itemId: null, quantity: "1" }]
+      return next.length > 0
+        ? next
+        : [{ key: "row-0", itemId: null, quantity: "1" }]
     })
   }
 
@@ -113,6 +116,7 @@ function RecipeForm({
     const formData = new FormData(event.currentTarget)
     const name = String(formData.get("name") ?? "")
     const description = String(formData.get("description") ?? "")
+    const yieldMl = Number(formData.get("yieldMl") ?? DEFAULT_YIELD_ML)
 
     const ingredients: { itemId: number; quantity: number }[] = []
     for (const row of rows) {
@@ -125,15 +129,22 @@ function RecipeForm({
       ingredients.push({ itemId: row.itemId, quantity })
     }
 
-    if (!name.trim() || ingredients.length === 0) {
-      setError(ingredients.length === 0 ? t("errors.noItems") : t("errors.invalid"))
+    if (
+      !name.trim() ||
+      ingredients.length === 0 ||
+      Number.isNaN(yieldMl) ||
+      yieldMl <= 0
+    ) {
+      setError(
+        ingredients.length === 0 ? t("errors.noItems") : t("errors.invalid")
+      )
       return
     }
 
     setError(null)
     startTransition(async () => {
       const result = await saveRecipeAction(
-        { name, description, items: ingredients },
+        { name, description, yieldMl, items: ingredients },
         recipe?.id
       )
 
@@ -170,13 +181,27 @@ function RecipeForm({
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="recipe-description">{t("fields.description")}</FieldLabel>
+          <FieldLabel htmlFor="recipe-description">
+            {t("fields.description")}
+          </FieldLabel>
           <Input
             id="recipe-description"
             name="description"
             placeholder={t("fields.descriptionPlaceholder")}
             defaultValue={recipe?.description}
             maxLength={500}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="recipe-yield">{t("fields.yieldMl")}</FieldLabel>
+          <Input
+            id="recipe-yield"
+            name="yieldMl"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            defaultValue={recipe?.yieldMl ?? DEFAULT_YIELD_ML}
+            required
           />
         </Field>
 
@@ -191,7 +216,9 @@ function RecipeForm({
                   <Select
                     value={row.itemId === null ? "" : String(row.itemId)}
                     onValueChange={(value) => {
-                      updateRow(row.key, { itemId: value === "" ? null : Number(value) })
+                      updateRow(row.key, {
+                        itemId: value === "" ? null : Number(value),
+                      })
                     }}
                     items={items.map((option) => ({
                       label: option.name,
@@ -271,9 +298,14 @@ function RecipeForm({
 
       <Separator className="my-6" />
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">{t("fields.total")}</span>
+        <span className="text-sm text-muted-foreground">
+          {t("fields.total")}
+        </span>
         <span className="text-lg font-semibold tabular-nums">
-          {format.number(totalCents / 100, { style: "currency", currency: "EUR" })}
+          {format.number(totalCents / 100, {
+            style: "currency",
+            currency: "EUR",
+          })}
         </span>
       </div>
 
@@ -321,7 +353,11 @@ function EditRecipeButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="icon" className="size-8 text-muted-foreground" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground"
+          />
         }
       >
         <PencilIcon />
@@ -332,7 +368,11 @@ function EditRecipeButton({
           <DialogTitle>{t("editRecipe")}</DialogTitle>
           <DialogDescription>{recipe.name}</DialogDescription>
         </DialogHeader>
-        <RecipeForm items={items} recipe={recipe} onDone={() => setOpen(false)} />
+        <RecipeForm
+          items={items}
+          recipe={recipe}
+          onDone={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )

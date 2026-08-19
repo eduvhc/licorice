@@ -16,13 +16,32 @@
     "selectItem": "Selecione um item",
     "quantity": "Quantidade",
     "remove": "Remover",
-    "total": "Custo total"
+    "total": "Custo total",
+    "yieldMl": "Rendimento (ml)"
   },
   "table": {
     "name": "Nome",
     "items": "Ingredientes",
     "total": "Custo total",
     "actions": "Ações"
+  },
+  "breakdown": {
+    "toggle": "Mostrar detalhe de custos",
+    "ingredients": "Custo dos ingredientes",
+    "cost": "Custo do lote",
+    "yield": "rende {ml} ml",
+    "batchPlanner": "Tamanho do lote",
+    "resetBatch": "Repor rendimento da receita",
+    "wasteWarning": "≈{quantity} {unit} — considere arredondar para {rounded} para não desperdiçar parte de um",
+    "simulation": "Simulação de preço",
+    "targetMargin": "Margem alvo (%)",
+    "bottles": "Garrafas",
+    "noBottles": "Ainda não há garrafas configuradas.",
+    "noBottlesLink": "Adicione uma em Definições",
+    "size": "Tamanho",
+    "suggestedPrice": "Preço sugerido",
+    "profit": "Lucro",
+    "markup": "Markup"
   },
   "overview": {
     "recipes": "Receitas",

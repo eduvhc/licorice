@@ -35,6 +35,7 @@
   },
   "errors": {
     "invalid": "Please check the form fields.",
+    "inUse": "Can't delete — still used by:",
     "server": "Could not save the item. Try again."
   },
   "toast": {

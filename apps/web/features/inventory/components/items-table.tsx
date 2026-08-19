@@ -30,8 +30,13 @@ import { EllipsisVerticalIcon, Trash2Icon } from "lucide-react"
 
 import type { Tag, Unit } from "@/features/settings/server/queries"
 import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
+import { ACTION_ERROR } from "@/shared/lib/action-result"
 
-import { usePathname, useRouter as useI18nRouter } from "@/i18n/navigation"
+import {
+  Link,
+  usePathname,
+  useRouter as useI18nRouter,
+} from "@/i18n/navigation"
 import { deleteItemAction } from "../server/actions"
 import type { Item } from "../server/queries"
 import { EditItemButton } from "./item-dialog"
@@ -88,7 +93,11 @@ function TagFilter({
     >
       <ToggleGroupItem value="all">{t("filter.all")}</ToggleGroupItem>
       {usedTags.map((tag) => (
-        <ToggleGroupItem key={tag.id} value={String(tag.id)} className="gap-1.5">
+        <ToggleGroupItem
+          key={tag.id}
+          value={String(tag.id)}
+          className="gap-1.5"
+        >
           <span
             className={cn(
               "size-1.5 rounded-full",
@@ -136,6 +145,29 @@ function ItemsTable({
       setPendingId(null)
 
       if (!result.ok) {
+        if (result.error === ACTION_ERROR.inUse) {
+          toast.error(t("errors.inUse"), {
+            description: (
+              <div className="mt-1 flex flex-col gap-1">
+                {result.recipes.map((recipe) => (
+                  <Link
+                    key={recipe.id}
+                    href={{
+                      pathname: "/dashboard/recipes",
+                      query: { open: recipe.id },
+                    }}
+                    className="underline underline-offset-2 hover:no-underline"
+                  >
+                    {recipe.name}
+                  </Link>
+                ))}
+              </div>
+            ),
+            duration: 8000,
+          })
+          return
+        }
+
         toast.error(t(`errors.${result.error}`))
         return
       }
@@ -210,7 +242,7 @@ function ItemsTable({
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
                             variant="destructive"
-                            onSelect={() => handleDelete(item.id)}
+                            onClick={() => handleDelete(item.id)}
                           >
                             <Trash2Icon />
                             {t("deleteItem")}

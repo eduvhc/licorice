@@ -15,6 +15,7 @@ export type RecipeWithItems = {
   id: number
   name: string
   description: string
+  yieldMl: number
   items: RecipeIngredient[]
   totalCents: number
 }
@@ -22,7 +23,7 @@ export type RecipeWithItems = {
 export const listRecipes = cache(async (): Promise<RecipeWithItems[]> => {
   const recipes = await appDb
     .selectFrom("recipes")
-    .select(["id", "name", "description"])
+    .select(["id", "name", "description", "yield_ml"])
     .orderBy("id", "desc")
     .execute()
 
@@ -62,6 +63,7 @@ export const listRecipes = cache(async (): Promise<RecipeWithItems[]> => {
       id: recipe.id,
       name: recipe.name,
       description: recipe.description,
+      yieldMl: recipe.yield_ml,
       items,
       totalCents: items.reduce(
         (sum, item) => sum + item.priceCents * item.quantity,
@@ -71,10 +73,12 @@ export const listRecipes = cache(async (): Promise<RecipeWithItems[]> => {
   })
 })
 
-export const getRecipe = cache(async (id: number): Promise<RecipeWithItems | null> => {
-  const recipes = await listRecipes()
-  return recipes.find((recipe) => recipe.id === id) ?? null
-})
+export const getRecipe = cache(
+  async (id: number): Promise<RecipeWithItems | null> => {
+    const recipes = await listRecipes()
+    return recipes.find((recipe) => recipe.id === id) ?? null
+  }
+)
 
 export type DashboardStats = {
   recipeCount: number
@@ -86,13 +90,13 @@ export type DashboardStats = {
 export const getDashboardStats = cache(async (): Promise<DashboardStats> => {
   const [recipes, items] = await Promise.all([
     listRecipes(),
-    appDb
-      .selectFrom("items")
-      .select(["id", "price_cents"])
-      .execute(),
+    appDb.selectFrom("items").select(["id", "price_cents"]).execute(),
   ])
 
-  const inventoryValueCents = items.reduce((sum, item) => sum + item.price_cents, 0)
+  const inventoryValueCents = items.reduce(
+    (sum, item) => sum + item.price_cents,
+    0
+  )
   const totalCost = recipes.reduce((sum, recipe) => sum + recipe.totalCents, 0)
 
   return {

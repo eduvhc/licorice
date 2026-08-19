@@ -3,7 +3,8 @@
   "description": "Manage the units and tags used across your inventory items.",
   "tabs": {
     "units": "Units",
-    "tags": "Tags"
+    "tags": "Tags",
+    "bottles": "Bottles"
   },
   "units": {
     "title": "Units",
@@ -35,6 +36,26 @@
     "table": {
       "name": "Name",
       "usage": "Items",
+      "actions": "Actions"
+    }
+  },
+  "bottles": {
+    "title": "Bottles",
+    "new": "New bottle",
+    "edit": "Edit bottle",
+    "delete": "Delete bottle",
+    "empty": "No bottles yet.",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Glass 500ml",
+      "sizeMl": "Size (ml)",
+      "price": "Price",
+      "pricePlaceholder": "0.50"
+    },
+    "table": {
+      "name": "Name",
+      "size": "Size",
+      "price": "Price",
       "actions": "Actions"
     }
   },

@@ -7,5 +7,5 @@ pre-commit:
       stage_fixed: true
     lint:
       glob: "apps/web/**/*.{ts,tsx}"
-      run: apps/web/node_modules/.bin/eslint --fix {staged_files}
+      run: "cd apps/web && node_modules/.bin/eslint --fix $(echo {staged_files} | sed 's#apps/web/##g')"
       stage_fixed: true
