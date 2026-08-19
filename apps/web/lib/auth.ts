@@ -3,40 +3,50 @@ import { nextCookies } from "better-auth/next-js"
 import Database from "better-sqlite3"
 import { SqliteDialect } from "kysely"
 
+import { sendEmail } from "@/features/email/server/mailer"
+import {
+  resetPasswordEmail,
+  verificationEmail,
+} from "@/features/email/server/templates"
 import { databasePath } from "@/lib/db"
+import { env } from "@/lib/env"
+
+import { getEnabledAuthProviders } from "@/features/auth/lib/auth-providers"
 
 const sqlite = new Database(databasePath)
 
+const enabledProviders = getEnabledAuthProviders()
+
 const socialProviders = {
-  ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+  ...(enabledProviders.github
     ? {
         github: {
-          clientId: process.env.GITHUB_CLIENT_ID,
-          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          clientId: env.GITHUB_CLIENT_ID!,
+          clientSecret: env.GITHUB_CLIENT_SECRET!,
         },
       }
     : {}),
-  ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  ...(enabledProviders.google
     ? {
         google: {
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          clientId: env.GOOGLE_CLIENT_ID!,
+          clientSecret: env.GOOGLE_CLIENT_SECRET!,
         },
       }
     : {}),
-  ...(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET
+  ...(enabledProviders.discord
     ? {
         discord: {
-          clientId: process.env.DISCORD_CLIENT_ID,
-          clientSecret: process.env.DISCORD_CLIENT_SECRET,
+          clientId: env.DISCORD_CLIENT_ID!,
+          clientSecret: env.DISCORD_CLIENT_SECRET!,
         },
       }
     : {}),
-  ...(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET
+  ...(enabledProviders.apple
     ? {
         apple: {
-          clientId: process.env.APPLE_CLIENT_ID,
-          clientSecret: process.env.APPLE_CLIENT_SECRET,
+          clientId: env.APPLE_CLIENT_ID!,
+          clientSecret: env.APPLE_CLIENT_SECRET!,
         },
       }
     : {}),
@@ -53,6 +63,22 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendEmail({ to: user.email, ...(await resetPasswordEmail(url)) })
+    },
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendEmail({ to: user.email, ...(await verificationEmail(url)) })
+    },
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+  },
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 60,
+    storage: "memory",
   },
   ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
   plugins: [nextCookies()],

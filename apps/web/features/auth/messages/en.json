@@ -17,7 +17,8 @@
     "emailDescription": "Sign in with your email and password",
     "submit": "Login",
     "switchPrompt": "Don't have an account?",
-    "switchCta": "Sign up"
+    "switchCta": "Sign up",
+    "forgotPassword": "Forgot password?"
   },
   "signUp": {
     "title": "Create your account",
@@ -34,6 +35,19 @@
     "emailPlaceholder": "m@example.com",
     "showPassword": "Show password",
     "hidePassword": "Hide password"
+  },
+  "forgotPassword": {
+    "title": "Reset your password",
+    "description": "Enter your email and we'll send you a link to reset your password",
+    "sentDescription": "If an account exists for that email, we've sent a reset link",
+    "submit": "Send reset link",
+    "backToLogin": "Back to login"
+  },
+  "resetPassword": {
+    "title": "Set a new password",
+    "description": "Choose a new password for your account",
+    "newPassword": "New password",
+    "submit": "Reset password"
   },
   "legal": {
     "prefix": "By continuing, you agree to our",

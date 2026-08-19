@@ -19,7 +19,10 @@ async function getErrorMessage(error: unknown) {
 }
 
 async function authFailure(error: string) {
-  redirect({ href: { pathname: "/login", query: { error } }, locale: await getLocale() })
+  redirect({
+    href: { pathname: "/login", query: { error } },
+    locale: await getLocale(),
+  })
 }
 
 export async function signInWithEmailAction(formData: FormData) {
@@ -62,7 +65,10 @@ export async function signUpWithEmailAction(formData: FormData) {
   redirect({ href: "/dashboard", locale: await getLocale() })
 }
 
-export async function signInWithSocialAction(provider: SocialProvider, formData: FormData) {
+export async function signInWithSocialAction(
+  provider: SocialProvider,
+  formData: FormData
+) {
   void formData
 
   let url: string | null = null
@@ -89,6 +95,57 @@ export async function signInWithSocialAction(provider: SocialProvider, formData:
   redirect({ href: "/login", locale: await getLocale() })
 }
 
+export async function forgotPasswordAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "")
+
+  try {
+    await auth.api.requestPasswordReset({
+      body: { email, redirectTo: "/reset-password" },
+    })
+  } catch {
+    // Intentionally ignored: don't leak whether the email exists.
+  }
+
+  redirect({
+    href: { pathname: "/forgot-password", query: { sent: "1" } },
+    locale: await getLocale(),
+  })
+}
+
+export async function resetPasswordAction(formData: FormData) {
+  const token = String(formData.get("token") ?? "")
+  const newPassword = String(formData.get("password") ?? "")
+
+  try {
+    await auth.api.resetPassword({
+      body: { newPassword, token },
+    })
+  } catch (error) {
+    const message = await getErrorMessage(error)
+    redirect({
+      href: { pathname: "/reset-password", query: { token, error: message } },
+      locale: await getLocale(),
+    })
+  }
+
+  redirect({
+    href: { pathname: "/login", query: { reset: "1" } },
+    locale: await getLocale(),
+  })
+}
+
+export async function resendVerificationEmailAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "")
+
+  try {
+    await auth.api.sendVerificationEmail({
+      body: { email, callbackURL: "/dashboard" },
+    })
+  } catch {
+    // Intentionally ignored: don't leak whether the email exists.
+  }
+}
+
 export async function signOutAction() {
   try {
     await auth.api.signOut({
@@ -96,7 +153,10 @@ export async function signOutAction() {
     })
   } catch (error) {
     const message = await getErrorMessage(error)
-    redirect({ href: { pathname: "/account", query: { error: message } }, locale: await getLocale() })
+    redirect({
+      href: { pathname: "/account", query: { error: message } },
+      locale: await getLocale(),
+    })
   }
 
   redirect({ href: "/", locale: await getLocale() })

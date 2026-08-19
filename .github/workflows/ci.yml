@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  BETTER_AUTH_SECRET: ci-dummy-secret
+  BETTER_AUTH_URL: http://localhost:3000
+  DATABASE_URL: ./better-auth.db
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint, typecheck, test, build
+        run: bunx turbo lint typecheck test build

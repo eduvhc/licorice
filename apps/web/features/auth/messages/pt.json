@@ -17,7 +17,8 @@
     "emailDescription": "Entre com o seu email e palavra-passe",
     "submit": "Entrar",
     "switchPrompt": "Ainda nao tem conta?",
-    "switchCta": "Criar conta"
+    "switchCta": "Criar conta",
+    "forgotPassword": "Esqueceu-se da palavra-passe?"
   },
   "signUp": {
     "title": "Crie a sua conta",
@@ -34,6 +35,19 @@
     "emailPlaceholder": "m@exemplo.com",
     "showPassword": "Mostrar palavra-passe",
     "hidePassword": "Esconder palavra-passe"
+  },
+  "forgotPassword": {
+    "title": "Repor a palavra-passe",
+    "description": "Indique o seu email e enviamos-lhe um link para repor a palavra-passe",
+    "sentDescription": "Se existir uma conta com esse email, enviamos um link de reposicao",
+    "submit": "Enviar link de reposicao",
+    "backToLogin": "Voltar ao login"
+  },
+  "resetPassword": {
+    "title": "Defina uma nova palavra-passe",
+    "description": "Escolha uma nova palavra-passe para a sua conta",
+    "newPassword": "Nova palavra-passe",
+    "submit": "Repor palavra-passe"
   },
   "legal": {
     "prefix": "Ao continuar, concorda com os nossos",
