@@ -2,7 +2,10 @@ pre-commit:
   parallel: true
   commands:
     format:
-      run: bun run format
+      glob: "*.{ts,tsx,md,json}"
+      run: node_modules/.bin/prettier --write {staged_files}
       stage_fixed: true
     lint:
-      run: bun run lint
+      glob: "apps/web/**/*.{ts,tsx}"
+      run: apps/web/node_modules/.bin/eslint --fix {staged_files}
+      stage_fixed: true
