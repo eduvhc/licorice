@@ -3,9 +3,9 @@
   "nav": {
     "overview": "Overview",
     "recipes": "Recipes",
-    "inventory": "Inventory"
+    "inventory": "Inventory",
+    "settings": "Settings"
   },
-  "navSecondary": ["Settings"],
   "manageAccount": "Manage account",
   "overview": {
     "title": "Overview",

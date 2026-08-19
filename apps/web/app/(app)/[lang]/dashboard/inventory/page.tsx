@@ -8,11 +8,17 @@ type InventoryRouteProps = {
   params: Promise<{
     lang: string
   }>
+  searchParams: Promise<{
+    tag?: string
+  }>
 }
 
-export default async function Page({ params }: InventoryRouteProps) {
+export default async function Page({ params, searchParams }: InventoryRouteProps) {
   const { lang } = await params
   if (!hasLocale(routing.locales, lang)) notFound()
+  const { tag } = await searchParams
+  const tagId = tag ? Number(tag) : NaN
+  const filterTagId = Number.isInteger(tagId) && tagId > 0 ? tagId : "all"
 
-  return <InventoryPage />
+  return <InventoryPage filterTagId={filterTagId} />
 }

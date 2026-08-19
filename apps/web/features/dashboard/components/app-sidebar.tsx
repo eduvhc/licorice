@@ -22,6 +22,7 @@ import {
   LayoutDashboardIcon,
   PackageIcon,
   Settings2Icon,
+  SettingsIcon,
 } from "lucide-react"
 
 import { Link as I18nLink } from "@/i18n/navigation"
@@ -31,6 +32,7 @@ const mainNav = [
   { key: "overview", href: "/dashboard", icon: LayoutDashboardIcon },
   { key: "recipes", href: "/dashboard/recipes", icon: BookOpenIcon },
   { key: "inventory", href: "/dashboard/inventory", icon: PackageIcon },
+  { key: "settings", href: "/dashboard/settings", icon: SettingsIcon },
 ] as const
 
 export function AppSidebar({

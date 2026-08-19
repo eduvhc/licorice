@@ -23,15 +23,34 @@ export async function saveItemAction(
   }
 
   try {
+    const [tag, unit] = await Promise.all([
+      appDb
+        .selectFrom("tags")
+        .select("id")
+        .where("id", "=", parsed.data.tagId)
+        .executeTakeFirst(),
+      appDb
+        .selectFrom("units")
+        .select("id")
+        .where("id", "=", parsed.data.unitId)
+        .executeTakeFirst(),
+    ])
+
+    if (!tag || !unit) {
+      return { ok: false, error: "invalid" }
+    }
+
+    const values = {
+      name: parsed.data.name,
+      price_cents: parsed.data.priceCents,
+      tag_id: parsed.data.tagId,
+      unit_id: parsed.data.unitId,
+    }
+
     if (id) {
       const result = await appDb
         .updateTable("items")
-        .set({
-          name: parsed.data.name,
-          unit: parsed.data.unit,
-          price_cents: parsed.data.priceCents,
-          type: parsed.data.type,
-        })
+        .set(values)
         .where("id", "=", id)
         .executeTakeFirst()
 
@@ -39,15 +58,7 @@ export async function saveItemAction(
         return { ok: false, error: "server" }
       }
     } else {
-      await appDb
-        .insertInto("items")
-        .values({
-          name: parsed.data.name,
-          unit: parsed.data.unit,
-          price_cents: parsed.data.priceCents,
-          type: parsed.data.type,
-        })
-        .execute()
+      await appDb.insertInto("items").values(values).execute()
     }
 
     revalidate()
@@ -58,7 +69,8 @@ export async function saveItemAction(
 }
 
 export async function deleteItemAction(id: number): Promise<ActionResult> {
-  try {    await appDb.deleteFrom("items").where("id", "=", id).execute()
+  try {
+    await appDb.deleteFrom("items").where("id", "=", id).execute()
     revalidate()
     return { ok: true }
   } catch {

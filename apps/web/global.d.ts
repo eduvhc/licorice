@@ -8,6 +8,7 @@ import type landingEn from "./features/landing/messages/en.json"
 import type legalEn from "./features/legal/messages/en.json"
 import type marketingEn from "./features/marketing/messages/en.json"
 import type recipesEn from "./features/recipes/messages/en.json"
+import type settingsEn from "./features/settings/messages/en.json"
 import type sharedEn from "./shared/messages/en.json"
 import type { routing } from "./i18n/routing"
 
@@ -23,6 +24,7 @@ declare module "next-intl" {
       legal: typeof legalEn
       marketing: typeof marketingEn
       recipes: typeof recipesEn
+      settings: typeof settingsEn
       shared: typeof sharedEn
     }
   }

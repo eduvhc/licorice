@@ -6,9 +6,20 @@ import { Kysely, SqliteDialect, type Generated } from "kysely"
 export interface ItemsTable {
   id: Generated<number>
   name: string
-  unit: string
   price_cents: number
-  type: string
+  tag_id: number
+  unit_id: number
+}
+
+export interface TagsTable {
+  id: Generated<number>
+  name: string
+  color: string
+}
+
+export interface UnitsTable {
+  id: Generated<number>
+  name: string
 }
 
 export interface RecipesTable {
@@ -28,6 +39,8 @@ type AppSchema = {
   items: ItemsTable
   recipes: RecipesTable
   recipe_items: RecipeItemsTable
+  tags: TagsTable
+  units: UnitsTable
 }
 
 const sqlite = new Database(path.join(process.cwd(), "app.db"))

@@ -5,7 +5,8 @@ import { appDb } from "@/lib/app-db"
 export type RecipeIngredient = {
   itemId: number
   name: string
-  unit: string
+  unitName: string
+  tagColor: string
   quantity: number
   priceCents: number
 }
@@ -32,13 +33,16 @@ export const listRecipes = cache(async (): Promise<RecipeWithItems[]> => {
   const rows = await appDb
     .selectFrom("recipe_items as ri")
     .innerJoin("items as i", "i.id", "ri.item_id")
+    .innerJoin("units as u", "u.id", "i.unit_id")
+    .innerJoin("tags as tg", "tg.id", "i.tag_id")
     .select([
       "ri.recipe_id",
       "ri.quantity",
       "i.id as itemId",
       "i.name",
-      "i.unit",
       "i.price_cents",
+      "u.name as unitName",
+      "tg.color as tagColor",
     ])
     .execute()
 
@@ -48,7 +52,8 @@ export const listRecipes = cache(async (): Promise<RecipeWithItems[]> => {
       .map((row) => ({
         itemId: row.itemId,
         name: row.name,
-        unit: row.unit,
+        unitName: row.unitName,
+        tagColor: row.tagColor,
         quantity: row.quantity,
         priceCents: row.price_cents,
       }))

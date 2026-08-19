@@ -17,6 +17,8 @@ import marketingEn from "@/features/marketing/messages/en.json"
 import marketingPt from "@/features/marketing/messages/pt.json"
 import recipesEn from "@/features/recipes/messages/en.json"
 import recipesPt from "@/features/recipes/messages/pt.json"
+import settingsEn from "@/features/settings/messages/en.json"
+import settingsPt from "@/features/settings/messages/pt.json"
 import sharedEn from "@/shared/messages/en.json"
 import sharedPt from "@/shared/messages/pt.json"
 
@@ -32,6 +34,7 @@ const messages = {
     legal: legalEn,
     marketing: marketingEn,
     recipes: recipesEn,
+    settings: settingsEn,
     shared: sharedEn,
   },
   pt: {
@@ -43,6 +46,7 @@ const messages = {
     legal: legalPt,
     marketing: marketingPt,
     recipes: recipesPt,
+    settings: settingsPt,
     shared: sharedPt,
   },
 }

@@ -21,42 +21,105 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@workspace/ui/components/toggle-group"
 import { cn } from "@workspace/ui/lib/utils"
 import { EllipsisVerticalIcon, Trash2Icon } from "lucide-react"
 
-import { ITEM_TYPES, itemTypeDot, type ItemType } from "../lib/item-types"
+import type { Tag, Unit } from "@/features/settings/server/queries"
+import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
+
+import { usePathname, useRouter as useI18nRouter } from "@/i18n/navigation"
 import { deleteItemAction } from "../server/actions"
 import type { Item } from "../server/queries"
 import { EditItemButton } from "./item-dialog"
 
-function formatPrice(
-  format: ReturnType<typeof useFormatter>,
-  cents: number
-) {
-  return format.number(cents / 100, { style: "currency", currency: "EUR" })
-}
-
-function TypeBadge({ type }: { type: ItemType }) {
-  const t = useTranslations("inventory")
-
+function TagBadge({ tag }: { tag: Tag }) {
   return (
     <Badge variant="outline" className="gap-1.5 text-muted-foreground">
-      <span className={cn("size-1.5 rounded-full", itemTypeDot[type])} />
-      {t(`types.${type}`)}
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          isTagColor(tag.color) ? tagColorDot[tag.color] : "bg-zinc-500"
+        )}
+      />
+      {tag.name}
     </Badge>
   )
 }
 
-function ItemsTable({ items }: { items: Item[] }) {
+function TagFilter({
+  tags,
+  filterTagId,
+}: {
+  tags: Tag[]
+  filterTagId: number | "all"
+}) {
+  const t = useTranslations("inventory")
+  const pathname = usePathname()
+  const router = useI18nRouter()
+
+  const usedTags = tags
+
+  function selectTag(value: number | "all") {
+    router.replace(
+      {
+        pathname,
+        query: value === "all" ? {} : { tag: String(value) },
+      },
+      { scroll: false }
+    )
+  }
+
+  return (
+    <ToggleGroup
+      multiple={false}
+      value={[String(filterTagId)]}
+      onValueChange={(value) => {
+        if (!value[0]) return
+        selectTag(value[0] === "all" ? "all" : Number(value[0]))
+      }}
+      variant="outline"
+      className="justify-start overflow-x-auto"
+      role="group"
+      aria-label={t("filter.label")}
+    >
+      <ToggleGroupItem value="all">{t("filter.all")}</ToggleGroupItem>
+      {usedTags.map((tag) => (
+        <ToggleGroupItem key={tag.id} value={String(tag.id)} className="gap-1.5">
+          <span
+            className={cn(
+              "size-1.5 rounded-full",
+              isTagColor(tag.color) ? tagColorDot[tag.color] : "bg-zinc-500"
+            )}
+          />
+          {tag.name}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
+  )
+}
+
+function ItemsTable({
+  items,
+  visibleItems,
+  tags,
+  units,
+  filterTagId,
+}: {
+  items: Item[]
+  visibleItems: Item[]
+  tags: Tag[]
+  units: Unit[]
+  filterTagId: number | "all"
+}) {
   const t = useTranslations("inventory")
   const format = useFormatter()
   const router = useRouter()
-  const [filter, setFilter] = React.useState<ItemType | "all">("all")
-  const [, startTransition] = React.useTransition()
   const [pendingId, setPendingId] = React.useState<number | null>(null)
-
-  const visibleItems =
-    filter === "all" ? items : items.filter((item) => item.type === filter)
+  const [, startTransition] = React.useTransition()
 
   if (items.length === 0) {
     return (
@@ -84,43 +147,7 @@ function ItemsTable({ items }: { items: Item[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div
-        className="flex flex-wrap items-center gap-2"
-        role="group"
-        aria-label={t("filter.label")}
-      >
-        <Button
-          type="button"
-          variant={filter === "all" ? "secondary" : "ghost"}
-          size="sm"
-          className="h-7 px-2.5 text-xs"
-          onClick={() => setFilter("all")}
-        >
-          {t("filter.all")}
-        </Button>
-        {ITEM_TYPES.map((type) => {
-          const count = items.filter((item) => item.type === type).length
-
-          if (count === 0) {
-            return null
-          }
-
-          return (
-            <Button
-              key={type}
-              type="button"
-              variant={filter === type ? "secondary" : "ghost"}
-              size="sm"
-              className="h-7 gap-1.5 px-2.5 text-xs"
-              onClick={() => setFilter(type)}
-            >
-              <span className={cn("size-1.5 rounded-full", itemTypeDot[type])} />
-              {t(`types.${type}`)}
-              <span className="text-muted-foreground">{count}</span>
-            </Button>
-          )
-        })}
-      </div>
+      <TagFilter tags={tags} filterTagId={filterTagId} />
 
       <div className="overflow-hidden rounded-lg border">
         <Table>
@@ -153,15 +180,20 @@ function ItemsTable({ items }: { items: Item[] }) {
                 >
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <TypeBadge type={item.type} />
+                    <TagBadge tag={item.tag} />
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{item.unit}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {item.unit.name}
+                  </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {formatPrice(format, item.price_cents)}
+                    {format.number(item.price_cents / 100, {
+                      style: "currency",
+                      currency: "EUR",
+                    })}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
-                      <EditItemButton item={item} />
+                      <EditItemButton item={item} tags={tags} units={units} />
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={

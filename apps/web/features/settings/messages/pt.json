@@ -1,0 +1,51 @@
+{
+  "title": "Definições",
+  "description": "Gira as unidades e etiquetas usadas nos itens do inventário.",
+  "tabs": {
+    "units": "Unidades",
+    "tags": "Etiquetas"
+  },
+  "units": {
+    "title": "Unidades",
+    "new": "Nova unidade",
+    "edit": "Editar unidade",
+    "delete": "Eliminar unidade",
+    "empty": "Ainda não há unidades.",
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "ml"
+    },
+    "table": {
+      "name": "Nome",
+      "usage": "Itens",
+      "actions": "Ações"
+    }
+  },
+  "tags": {
+    "title": "Etiquetas",
+    "new": "Nova etiqueta",
+    "edit": "Editar etiqueta",
+    "delete": "Eliminar etiqueta",
+    "empty": "Ainda não há etiquetas.",
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "Fruta",
+      "color": "Cor"
+    },
+    "table": {
+      "name": "Nome",
+      "usage": "Itens",
+      "actions": "Ações"
+    }
+  },
+  "errors": {
+    "invalid": "Verifique os campos do formulário.",
+    "inUse": "Ainda está a ser usada por itens do inventário e não pode ser eliminada.",
+    "duplicate": "Esse nome já existe.",
+    "server": "Não foi possível guardar. Tente novamente."
+  },
+  "toast": {
+    "saved": "Guardado.",
+    "deleted": "Eliminado."
+  }
+}

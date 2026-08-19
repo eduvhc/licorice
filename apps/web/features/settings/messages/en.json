@@ -1,0 +1,51 @@
+{
+  "title": "Settings",
+  "description": "Manage the units and tags used across your inventory items.",
+  "tabs": {
+    "units": "Units",
+    "tags": "Tags"
+  },
+  "units": {
+    "title": "Units",
+    "new": "New unit",
+    "edit": "Edit unit",
+    "delete": "Delete unit",
+    "empty": "No units yet.",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "ml"
+    },
+    "table": {
+      "name": "Name",
+      "usage": "Items",
+      "actions": "Actions"
+    }
+  },
+  "tags": {
+    "title": "Tags",
+    "new": "New tag",
+    "edit": "Edit tag",
+    "delete": "Delete tag",
+    "empty": "No tags yet.",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Fruit",
+      "color": "Color"
+    },
+    "table": {
+      "name": "Name",
+      "usage": "Items",
+      "actions": "Actions"
+    }
+  },
+  "errors": {
+    "invalid": "Please check the form fields.",
+    "inUse": "Still in use by inventory items and cannot be deleted.",
+    "duplicate": "That name already exists.",
+    "server": "Could not save. Try again."
+  },
+  "toast": {
+    "saved": "Saved.",
+    "deleted": "Deleted."
+  }
+}

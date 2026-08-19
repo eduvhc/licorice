@@ -23,6 +23,8 @@ import {
 import { EllipsisVerticalIcon, Trash2Icon } from "lucide-react"
 
 import type { Item } from "@/features/inventory/server/queries"
+import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
+import { cn } from "@workspace/ui/lib/utils"
 
 import { deleteRecipeAction } from "../server/actions"
 import type { RecipeWithItems } from "../server/queries"
@@ -105,7 +107,16 @@ function RecipesTable({
                     key={`${recipe.id}-${item.itemId}`}
                     className="rounded-md bg-muted px-1.5 py-0.5 text-xs text-muted-foreground"
                   >
-                    {item.name} × {formatQuantity(format, item.quantity)}
+                    <span
+                      className={cn(
+                        "mr-1 inline-block size-1.5 rounded-full align-middle",
+                        isTagColor(item.tagColor)
+                          ? tagColorDot[item.tagColor]
+                          : "bg-zinc-500"
+                      )}
+                    />
+                    {item.name} × {formatQuantity(format, item.quantity)}{" "}
+                    {item.unitName}
                   </span>
                 ))}
               </div>

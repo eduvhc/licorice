@@ -32,7 +32,7 @@ import { Separator } from "@workspace/ui/components/separator"
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import type { Item } from "@/features/inventory/server/queries"
-import { itemTypeDot } from "@/features/inventory/lib/item-types"
+import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { saveRecipeAction } from "../server/actions"
@@ -189,9 +189,9 @@ function RecipeForm({
               return (
                 <div key={row.key} className="flex items-center gap-2">
                   <Select
-                    value={row.itemId === null ? undefined : String(row.itemId)}
+                    value={row.itemId === null ? "" : String(row.itemId)}
                     onValueChange={(value) => {
-                      updateRow(row.key, { itemId: Number(value) })
+                      updateRow(row.key, { itemId: value === "" ? null : Number(value) })
                     }}
                     items={items.map((option) => ({
                       label: option.name,
@@ -208,24 +208,36 @@ function RecipeForm({
                             <span
                               className={cn(
                                 "size-1.5 rounded-full",
-                                itemTypeDot[option.type]
+                                isTagColor(option.tag.color)
+                                  ? tagColorDot[option.tag.color]
+                                  : "bg-zinc-500"
                               )}
                             />
                             {option.name}
+                            <span className="text-muted-foreground">
+                              /{option.unit.name}
+                            </span>
                           </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <Input
-                    className="w-24"
-                    inputMode="decimal"
-                    value={row.quantity}
-                    onChange={(event) =>
-                      updateRow(row.key, { quantity: event.target.value })
-                    }
-                    aria-label={t("fields.quantity")}
-                  />
+                  <div className="flex w-28 items-center gap-1">
+                    <Input
+                      className="w-full"
+                      inputMode="decimal"
+                      value={row.quantity}
+                      onChange={(event) =>
+                        updateRow(row.key, { quantity: event.target.value })
+                      }
+                      aria-label={t("fields.quantity")}
+                    />
+                    {item ? (
+                      <span className="shrink-0 text-xs text-muted-foreground">
+                        {item.unit.name}
+                      </span>
+                    ) : null}
+                  </div>
                   <span className="w-20 shrink-0 text-right text-xs text-muted-foreground">
                     {item
                       ? format.number(item.price_cents / 100, {

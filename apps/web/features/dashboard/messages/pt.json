@@ -3,9 +3,9 @@
   "nav": {
     "overview": "Visão geral",
     "recipes": "Receitas",
-    "inventory": "Inventário"
+    "inventory": "Inventário",
+    "settings": "Definições"
   },
-  "navSecondary": ["Definições"],
   "manageAccount": "Gerir conta",
   "overview": {
     "title": "Visão geral",
