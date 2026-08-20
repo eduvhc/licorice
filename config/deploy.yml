@@ -36,6 +36,14 @@ env:
 
 builder:
   arch: amd64
+  # Build from the local working dir (not a git clone) so uncommitted deploy
+  # changes (migrate script, Dockerfile wiring) are included. The .dockerignore
+  # keeps the context lean (node_modules/.next/*.db excluded).
+  context: .
+  # Build natively on the app host (amd64) from this Apple Silicon Mac —
+  # no QEMU emulation. Requires Docker on 192.168.50.209 (installed by the
+  # homelab licorice stack). Inert on amd64 CI runners (builds locally there).
+  remote: ssh://root@192.168.50.209
 
 ssh:
   user: root

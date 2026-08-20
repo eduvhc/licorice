@@ -31,5 +31,12 @@ COPY --from=build /repo/apps/web/.next/standalone ./
 COPY --from=build /repo/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /repo/apps/web/public ./apps/web/public
 
+# Migration wiring for the Kamal pre-deploy hook (apps/web/scripts/migrate.ts).
+# The standalone output prunes the kysely config + db/migrations, so they're
+# copied back in explicitly; the hook runs this script against the freshly
+# pulled image before the new app container takes traffic.
+COPY --from=build /repo/apps/web/scripts/migrate.ts ./apps/web/scripts/migrate.ts
+COPY --from=build /repo/apps/web/db/migrations ./apps/web/db/migrations
+
 EXPOSE 3000
 CMD ["bun", "apps/web/server.js"]

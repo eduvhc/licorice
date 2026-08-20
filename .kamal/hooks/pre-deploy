@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Runs Kysely migrations from the just-pulled image, before the new app
+# container takes traffic. Runs once on the primary host against the new
+# version; the one-off exec container inherits the service's volumes + env,
+# so it writes to the persistent /srv/licorice/data/app.db.
+
+if [ "${KAMAL_COMMAND:-}" = "rollback" ]; then
+  echo "Skipping migrations on rollback"
+  exit 0
+fi
+
+if [ -z "${KAMAL_VERSION:-}" ]; then
+  echo "KAMAL_VERSION not set; refusing to migrate without a pinned image" >&2
+  exit 1
+fi
+
+echo "Running Kysely migrations against ${KAMAL_VERSION}..."
+kamal app exec --primary --version="${KAMAL_VERSION}" -- "bun apps/web/scripts/migrate.ts"
