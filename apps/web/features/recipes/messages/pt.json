@@ -43,11 +43,37 @@
     "profit": "Lucro",
     "markup": "Markup"
   },
+  "card": {
+    "itemsCount": "{count, plural, one {# ingrediente} other {# ingredientes}}",
+    "openDetails": "Ver detalhe",
+    "totalCost": "Custo total"
+  },
+  "breakdownPanel": {
+    "items": "{count, plural, one {# ingrediente} other {# ingredientes}} · rende {ml} ml",
+    "costLowHigh": "Custo · rende {ml} ml",
+    "costRange": "{low} – {high}",
+    "pickCheapest": "Substituição: a mais barata",
+    "primaryRow": "Principal",
+    "alternativesRow": "Alternativas"
+  },
+  "form": {
+    "ingredientGroup": "Ingrediente",
+    "addAlternative": "Adicionar alternativa",
+    "selectAlternative": "Selecionar alternativa",
+    "removeGroup": "Remover ingrediente",
+    "cancel": "Cancelar"
+  },
+  "detail": {
+    "back": "Voltar às receitas",
+    "default": "Padrão",
+    "alternativesToggle": "{count, plural, one {# alternativa} other {# alternativas}}"
+  },
   "overview": {
     "recipes": "Receitas",
     "items": "Itens no inventário",
     "inventoryValue": "Valor do inventário",
     "avgCost": "Custo médio por receita",
+    "avgCostRange": "{low} – {high}",
     "recentRecipes": "Últimas receitas",
     "viewAll": "Ver todas as receitas"
   },

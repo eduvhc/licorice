@@ -1,29 +1,15 @@
 import { getTranslations } from "next-intl/server"
 
-import { Card, CardContent } from "@workspace/ui/components/card"
+import { Button } from "@workspace/ui/components/button"
+import { Link } from "@/i18n/navigation"
+import { PlusIcon } from "lucide-react"
 
-import { listItems } from "@/features/inventory/server/queries"
-import { listBottles } from "@/features/settings/server/queries"
-
-import { NewRecipeButton } from "./recipe-dialog"
 import { RecipesTable } from "./recipes-table"
 import { listRecipes } from "../server/queries"
 
-async function RecipesPage({
-  openRecipeId,
-  marginPercent,
-  batchMl,
-}: {
-  openRecipeId: number | null
-  marginPercent: number
-  batchMl: number | null
-}) {
+async function RecipesPage() {
   const t = await getTranslations("recipes")
-  const [recipes, items, bottles] = await Promise.all([
-    listRecipes(),
-    listItems(),
-    listBottles(),
-  ])
+  const recipes = await listRecipes()
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
@@ -36,21 +22,13 @@ async function RecipesPage({
             {t("description")}
           </p>
         </div>
-        <NewRecipeButton items={items} />
+        <Button render={<Link href="/dashboard/recipes/new" />}>
+          <PlusIcon data-icon="inline-start" />
+          {t("newRecipe")}
+        </Button>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
-          <RecipesTable
-            recipes={recipes}
-            items={items}
-            openRecipeId={openRecipeId}
-            marginPercent={marginPercent}
-            bottles={bottles}
-            batchMl={batchMl}
-          />
-        </CardContent>
-      </Card>
+      <RecipesTable recipes={recipes} />
     </div>
   )
 }

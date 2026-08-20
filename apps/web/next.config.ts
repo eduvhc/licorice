@@ -1,3 +1,5 @@
+import path from "node:path"
+
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
 import { withSentryConfig } from "@sentry/nextjs"
@@ -30,6 +32,11 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  // bun.lock isn't in Next's monorepo-root auto-detection list, so without
+  // this it traces from an inferred root several levels too high (leaking
+  // unrelated parent directories into .next/standalone's path structure).
+  outputFileTracingRoot: path.join(__dirname, "../.."),
   transpilePackages: ["@workspace/ui"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }]

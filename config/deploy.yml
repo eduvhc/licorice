@@ -1,0 +1,41 @@
+service: licorice
+
+image: eduvhc/licorice
+
+servers:
+  web:
+    hosts:
+      - 192.168.50.209
+
+registry:
+  server: ghcr.io
+  username: eduvhc
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+proxy:
+  host: liq.733113.xyz
+  app_port: 3000
+  # Cloudflare terminates TLS at the edge and Caddy talks plain HTTP to
+  # kamal-proxy — see homelab/stacks/licorice/README.md. Turning this on
+  # would make kamal-proxy try (and fail) to provision its own cert.
+  ssl: false
+
+volumes:
+  - "/srv/licorice/data:/app/data"
+
+env:
+  clear:
+    BETTER_AUTH_URL: "https://liq.733113.xyz"
+    DATABASE_URL: "/app/data/better-auth.db"
+    APP_DATABASE_URL: "/app/data/app.db"
+    EMAIL_FROM: "onboarding@liq.733113.xyz"
+    LOG_LEVEL: "info"
+  secret:
+    - BETTER_AUTH_SECRET
+
+builder:
+  arch: amd64
+
+ssh:
+  user: root

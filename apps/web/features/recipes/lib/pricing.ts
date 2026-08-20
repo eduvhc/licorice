@@ -19,3 +19,50 @@ export function needsWholeUnitWarning(unitName: string, quantity: number) {
   if (!DISCRETE_UNIT_NAMES.includes(unitName)) return false
   return Math.abs(quantity - Math.round(quantity)) > 0.01
 }
+
+/**
+ * Ingredient with its unit price and the relative quantity for one batch.
+ */
+export type IngredientCost = {
+  quantity: number
+  priceCents: number
+}
+
+/**
+ * Compute the optimistic + pessimistic band for a group: primary row + 0..N
+ * alternative rows. The optimistic band picks the cheapest substitution per
+ * group; the pessimistic band picks the priciest. Single-option groups collapse
+ * (lowCents === highCents).
+ */
+export function groupCostBand(group: IngredientCost[]): {
+  lowCents: number
+  highCents: number
+  hasRange: boolean
+} {
+  if (group.length === 0) {
+    return { lowCents: 0, highCents: 0, hasRange: false }
+  }
+  let lowCents = Number.POSITIVE_INFINITY
+  let highCents = 0
+  for (const ing of group) {
+    const cost = Math.round(ing.priceCents * ing.quantity)
+    if (cost < lowCents) lowCents = cost
+    if (cost > highCents) highCents = cost
+  }
+  if (!Number.isFinite(lowCents)) lowCents = 0
+  return {
+    lowCents,
+    highCents,
+    hasRange: group.length > 1 && lowCents !== highCents,
+  }
+}
+
+/** Returns the cheaper primary row from a group (lowest qty×price). */
+export function cheapestIngredient(group: IngredientCost[]) {
+  if (group.length === 0) return null
+  return group.reduce((best, ing) => {
+    const cost = Math.round(ing.priceCents * ing.quantity)
+    const bestCost = Math.round(best.priceCents * best.quantity)
+    return cost < bestCost ? ing : best
+  })
+}

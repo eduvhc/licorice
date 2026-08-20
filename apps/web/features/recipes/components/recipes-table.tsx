@@ -1,294 +1,197 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
-import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
+import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@workspace/ui/components/collapsible"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import {
   Table,
+  TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table"
-import { ChevronDownIcon, EllipsisVerticalIcon, Trash2Icon } from "lucide-react"
+import {
+  ChevronRightIcon,
+  EllipsisVerticalIcon,
+  PencilIcon,
+  Trash2Icon,
+} from "lucide-react"
 
-import type { Item } from "@/features/inventory/server/queries"
-import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
-import type { Bottle } from "@/features/settings/server/queries"
-import { usePathname, useRouter as useI18nRouter } from "@/i18n/navigation"
+import { Link } from "@/i18n/navigation"
 import { cn } from "@workspace/ui/lib/utils"
 
 import { deleteRecipeAction } from "../server/actions"
-import { DEFAULT_MARGIN_PERCENT } from "../lib/pricing"
-import { useDebouncedQueryValue } from "../lib/use-debounced-query-value"
 import type { RecipeWithItems } from "../server/queries"
-import { EditRecipeButton } from "./recipe-dialog"
-import { RecipeCostBreakdown } from "./recipe-cost-breakdown"
 
-const QUERY_SYNC_DELAY_MS = 400
-
-function formatQuantity(
-  format: ReturnType<typeof useFormatter>,
-  value: number
-) {
-  return format.number(value, { maximumFractionDigits: 3 })
+function countTotalIngredients(recipe: RecipeWithItems) {
+  return recipe.groups.reduce(
+    (sum, group) => sum + 1 + group.alternatives.length,
+    0
+  )
 }
 
-function RecipesTable({
-  recipes,
-  items,
-  openRecipeId,
-  marginPercent,
-  bottles,
-  batchMl,
-}: {
-  recipes: RecipeWithItems[]
-  items: Item[]
-  openRecipeId: number | null
-  marginPercent: number
-  bottles: Bottle[]
-  batchMl: number | null
-}) {
+function RecipesTable({ recipes }: { recipes: RecipeWithItems[] }) {
   const t = useTranslations("recipes")
   const format = useFormatter()
   const router = useRouter()
-  const pathname = usePathname()
-  const i18nRouter = useI18nRouter()
-  const searchParams = useSearchParams()
+  const [pendingDeleteId, setPendingDeleteId] = React.useState<number | null>(
+    null
+  )
   const [, startTransition] = React.useTransition()
-  const [pendingId, setPendingId] = React.useState<number | null>(null)
-  const [highlightId, setHighlightId] = React.useState<number | null>(null)
-  const rowRefs = React.useRef(new Map<number, HTMLTableRowElement>())
-
-  React.useEffect(() => {
-    if (openRecipeId === null) return
-
-    const row = rowRefs.current.get(openRecipeId)
-    if (!row) return
-
-    row.scrollIntoView({ behavior: "smooth", block: "center" })
-    setHighlightId(openRecipeId)
-    const timeout = setTimeout(() => setHighlightId(null), 1500)
-    return () => clearTimeout(timeout)
-  }, [openRecipeId])
-
-  function updateQuery(next: {
-    open?: number | null
-    margin?: number | null
-    batchMl?: number | null
-  }) {
-    const params = new URLSearchParams(searchParams)
-
-    if ("open" in next) {
-      if (next.open === null) {
-        params.delete("open")
-      } else {
-        params.set("open", String(next.open))
-      }
-    }
-
-    if ("margin" in next) {
-      if (next.margin === null || next.margin === DEFAULT_MARGIN_PERCENT) {
-        params.delete("margin")
-      } else {
-        params.set("margin", String(next.margin))
-      }
-    }
-
-    if ("batchMl" in next) {
-      if (next.batchMl === null) {
-        params.delete("batchMl")
-      } else {
-        params.set("batchMl", String(next.batchMl))
-      }
-    }
-
-    i18nRouter.replace(
-      { pathname, query: Object.fromEntries(params) },
-      { scroll: false }
-    )
-  }
-
-  const [localMargin, setLocalMargin] = useDebouncedQueryValue(
-    marginPercent,
-    (value) => updateQuery({ margin: value }),
-    QUERY_SYNC_DELAY_MS
-  )
-  const [localBatchMl, setLocalBatchMl] = useDebouncedQueryValue(
-    batchMl,
-    (value) => updateQuery({ batchMl: value }),
-    QUERY_SYNC_DELAY_MS
-  )
-
-  function handleToggle(recipeId: number, open: boolean) {
-    updateQuery({ open: open ? recipeId : null })
-  }
-
-  if (recipes.length === 0) {
-    return (
-      <div className="flex min-h-24 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
-        {t("empty")}
-      </div>
-    )
-  }
 
   function handleDelete(id: number) {
-    setPendingId(id)
+    if (pendingDeleteId !== null) return
+    setPendingDeleteId(id)
     startTransition(async () => {
       const result = await deleteRecipeAction(id)
-      setPendingId(null)
-
+      setPendingDeleteId(null)
       if (!result.ok) {
         toast.error(t(`errors.${result.error}`))
         return
       }
-
       toast.success(t("toast.deleted"))
       router.refresh()
     })
   }
 
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{t("table.name")}</TableHead>
-          <TableHead>{t("table.items")}</TableHead>
-          <TableHead className="text-right">{t("table.total")}</TableHead>
-          <TableHead className="w-24">
-            <span className="sr-only">{t("table.actions")}</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      {recipes.map((recipe) => {
-        const isOpen = openRecipeId === recipe.id
+  if (recipes.length === 0) {
+    return (
+      <div className="flex min-h-32 items-center justify-center rounded-2xl border border-dashed text-sm text-muted-foreground">
+        {t("empty")}
+      </div>
+    )
+  }
 
-        return (
-          <Collapsible
-            key={recipe.id}
-            render={<tbody />}
-            open={isOpen}
-            onOpenChange={(open) => handleToggle(recipe.id, open)}
-          >
-            <TableRow
-              ref={(el) => {
-                if (el) rowRefs.current.set(recipe.id, el)
-                else rowRefs.current.delete(recipe.id)
-              }}
-              className={cn(
-                pendingId === recipe.id && "opacity-50",
-                highlightId === recipe.id &&
-                  "bg-primary/10 transition-colors duration-1000"
-              )}
-            >
-              <TableCell>
-                <div className="font-medium">{recipe.name}</div>
-                {recipe.description ? (
-                  <div className="max-w-md truncate text-xs text-muted-foreground">
-                    {recipe.description}
-                  </div>
-                ) : null}
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  {recipe.items.map((item) => (
-                    <span
-                      key={`${recipe.id}-${item.itemId}`}
-                      className="rounded-md bg-muted px-1.5 py-0.5 text-xs text-muted-foreground"
-                    >
-                      <span
-                        className={cn(
-                          "mr-1 inline-block size-1.5 rounded-full align-middle",
-                          isTagColor(item.tagColor)
-                            ? tagColorDot[item.tagColor]
-                            : "bg-zinc-500"
-                        )}
-                      />
-                      {item.name} × {formatQuantity(format, item.quantity)}{" "}
-                      {item.unitName}
+  return (
+    <div className="overflow-hidden rounded-xl border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t("table.name")}</TableHead>
+            <TableHead className="text-right">{t("table.total")}</TableHead>
+            <TableHead className="w-10" />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {recipes.map((recipe, index) => {
+            const detailHref = `/dashboard/recipes/${recipe.id}`
+            const pending = pendingDeleteId === recipe.id
+            const totalItems = countTotalIngredients(recipe)
+
+            return (
+              <TableRow
+                key={recipe.id}
+                data-testid={`recipe-row-${recipe.id}`}
+                data-recipe-index={index}
+                className={cn(pending && "opacity-60")}
+              >
+                <TableCell className="max-w-0 py-3 whitespace-normal">
+                  <Link href={detailHref} className="block">
+                    <span className="line-clamp-1 font-medium text-foreground hover:underline">
+                      {recipe.name}
                     </span>
-                  ))}
-                </div>
-              </TableCell>
-              <TableCell className="text-right font-medium tabular-nums">
-                {format.number(recipe.totalCents / 100, {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center justify-end gap-1">
-                  <EditRecipeButton recipe={recipe} items={items} />
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
+                    {recipe.description ? (
+                      <span className="line-clamp-1 text-xs text-muted-foreground">
+                        {recipe.description}
+                      </span>
+                    ) : null}
+                    <Badge
+                      variant="outline"
+                      className="mt-1 text-muted-foreground"
+                    >
+                      {t("card.itemsCount", { count: totalItems })}
+                    </Badge>
+                  </Link>
+                </TableCell>
+                <TableCell className="py-3 text-right whitespace-nowrap tabular-nums">
+                  {recipe.hasRange ? (
+                    <span className="font-semibold">
+                      {t("breakdownPanel.costRange", {
+                        low: format.number(recipe.totalLowCents / 100, {
+                          style: "currency",
+                          currency: "EUR",
+                        }),
+                        high: format.number(recipe.totalHighCents / 100, {
+                          style: "currency",
+                          currency: "EUR",
+                        }),
+                      })}
+                    </span>
+                  ) : (
+                    <span className="font-semibold">
+                      {format.number(recipe.totalLowCents / 100, {
+                        style: "currency",
+                        currency: "EUR",
+                      })}
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell className="py-3 pr-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 text-muted-foreground"
+                            aria-label={t("table.actions")}
+                          />
+                        }
+                      >
+                        <EllipsisVerticalIcon />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="min-w-44">
+                        <DropdownMenuItem
+                          render={<Link href={`${detailHref}/edit`} />}
+                        >
+                          <PencilIcon />
+                          {t("editRecipe")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => handleDelete(recipe.id)}
+                          disabled={pending}
+                        >
+                          <Trash2Icon />
+                          {t("deleteRecipe")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 text-muted-foreground"
                       render={
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-8 text-muted-foreground"
+                        <Link
+                          href={detailHref}
+                          aria-label={t("card.openDetails")}
                         />
                       }
                     >
-                      <EllipsisVerticalIcon />
-                      <span className="sr-only">{t("table.actions")}</span>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => handleDelete(recipe.id)}
-                      >
-                        <Trash2Icon />
-                        {t("deleteRecipe")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <CollapsibleTrigger
-                    render={
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="group size-8 text-muted-foreground"
-                      />
-                    }
-                  >
-                    <ChevronDownIcon className="transition-transform group-data-[open]:rotate-180" />
-                    <span className="sr-only">{t("breakdown.toggle")}</span>
-                  </CollapsibleTrigger>
-                </div>
-              </TableCell>
-            </TableRow>
-            <CollapsibleContent render={<tr />}>
-              <td colSpan={4} className="p-0">
-                <div className="bg-muted/30 px-4">
-                  <RecipeCostBreakdown
-                    recipe={recipe}
-                    marginPercent={isOpen ? localMargin : marginPercent}
-                    onMarginPercentChange={setLocalMargin}
-                    bottles={bottles}
-                    batchMl={isOpen ? localBatchMl : batchMl}
-                    onBatchMlChange={setLocalBatchMl}
-                  />
-                </div>
-              </td>
-            </CollapsibleContent>
-          </Collapsible>
-        )
-      })}
-    </Table>
+                      <ChevronRightIcon />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 

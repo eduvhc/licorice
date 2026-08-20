@@ -36,6 +36,14 @@ export interface RecipeItemsTable {
   quantity: number
 }
 
+export interface RecipeItemAlternativesTable {
+  id: Generated<number>
+  primary_recipe_item_id: number
+  item_id: number
+  quantity: number
+  sort_order: number
+}
+
 export interface BottlesTable {
   id: Generated<number>
   name: string
@@ -47,12 +55,25 @@ type AppSchema = {
   items: ItemsTable
   recipes: RecipesTable
   recipe_items: RecipeItemsTable
+  recipe_item_alternatives: RecipeItemAlternativesTable
   tags: TagsTable
   units: UnitsTable
   bottles: BottlesTable
 }
 
-const sqlite = new Database(path.join(process.cwd(), "app.db"))
+function resolveDatabasePath() {
+  const databaseUrl = process.env.APP_DATABASE_URL
+
+  if (!databaseUrl) {
+    return path.join(process.cwd(), "app.db")
+  }
+
+  return path.isAbsolute(databaseUrl)
+    ? databaseUrl
+    : path.join(process.cwd(), databaseUrl)
+}
+
+const sqlite = new Database(resolveDatabasePath())
 
 export const appDb = new Kysely<AppSchema>({
   dialect: new SqliteDialect({

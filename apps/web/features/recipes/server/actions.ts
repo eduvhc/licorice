@@ -23,8 +23,14 @@ export async function saveRecipeAction(
   }
 
   try {
-    for (const item of parsed.data.items) {
-      if (!(await itemExists(item.itemId))) {
+    const itemIds = new Set<number>()
+    for (const group of parsed.data.groups) {
+      itemIds.add(group.primary.itemId)
+      for (const alt of group.alternatives) itemIds.add(alt.itemId)
+    }
+
+    for (const itemId of itemIds) {
+      if (!(await itemExists(itemId))) {
         return { ok: false, error: ACTION_ERROR.invalid }
       }
     }
@@ -59,16 +65,31 @@ export async function saveRecipeAction(
         recipeId = inserted.id
       }
 
-      await trx
-        .insertInto("recipe_items")
-        .values(
-          parsed.data.items.map((item) => ({
+      for (const group of parsed.data.groups) {
+        const primaryInsert = await trx
+          .insertInto("recipe_items")
+          .values({
             recipe_id: recipeId!,
-            item_id: item.itemId,
-            quantity: item.quantity,
-          }))
-        )
-        .execute()
+            item_id: group.primary.itemId,
+            quantity: group.primary.quantity,
+          })
+          .returning("id")
+          .executeTakeFirstOrThrow()
+
+        if (group.alternatives.length > 0) {
+          await trx
+            .insertInto("recipe_item_alternatives")
+            .values(
+              group.alternatives.map((alt, sortOrder) => ({
+                primary_recipe_item_id: primaryInsert.id,
+                item_id: alt.itemId,
+                quantity: alt.quantity,
+                sort_order: sortOrder + 1,
+              }))
+            )
+            .execute()
+        }
+      }
     })
 
     revalidatePath("/", "layout")

@@ -43,11 +43,37 @@
     "profit": "Profit",
     "markup": "Markup"
   },
+  "card": {
+    "itemsCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+    "openDetails": "View breakdown",
+    "totalCost": "Total cost"
+  },
+  "breakdownPanel": {
+    "items": "{count, plural, one {# ingredient} other {# ingredients}} · yields {ml} ml",
+    "costLowHigh": "Cost · yields {ml} ml",
+    "costRange": "{low} – {high}",
+    "pickCheapest": "Substitution selected: cheapest",
+    "primaryRow": "Primary",
+    "alternativesRow": "Alternatives"
+  },
+  "form": {
+    "ingredientGroup": "Ingredient",
+    "addAlternative": "Add alternative",
+    "selectAlternative": "Select alternative",
+    "removeGroup": "Remove ingredient",
+    "cancel": "Cancel"
+  },
+  "detail": {
+    "back": "Back to recipes",
+    "default": "Default",
+    "alternativesToggle": "{count, plural, one {# alternative} other {# alternatives}}"
+  },
   "overview": {
     "recipes": "Recipes",
     "items": "Inventory items",
     "inventoryValue": "Inventory value",
     "avgCost": "Average recipe cost",
+    "avgCostRange": "{low} – {high}",
     "recentRecipes": "Latest recipes",
     "viewAll": "View all recipes"
   },

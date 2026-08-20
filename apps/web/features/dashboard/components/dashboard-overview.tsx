@@ -29,7 +29,10 @@ async function DashboardOverview() {
     getTranslations("recipes"),
     getFormatter(),
   ])
-  const [stats, recipes] = await Promise.all([getDashboardStats(), listRecipes()])
+  const [stats, recipes] = await Promise.all([
+    getDashboardStats(),
+    listRecipes(),
+  ])
   const money = (cents: number) =>
     format.number(cents / 100, { style: "currency", currency: "EUR" })
 
@@ -51,7 +54,12 @@ async function DashboardOverview() {
     },
     {
       label: tRecipes("overview.avgCost"),
-      value: money(stats.avgRecipeCostCents),
+      value: stats.hasRange
+        ? tRecipes("overview.avgCostRange", {
+            low: money(stats.avgRecipeLowCents),
+            high: money(stats.avgRecipeHighCents),
+          })
+        : money(stats.avgRecipeLowCents),
       icon: TrendingUpIcon,
     },
   ]
@@ -67,11 +75,13 @@ async function DashboardOverview() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
+      <div className="grid grid-cols-1 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
         {cards.map((card) => (
           <Card key={card.label} className="@container/card">
             <CardHeader>
-              <CardDescription className="truncate">{card.label}</CardDescription>
+              <CardDescription className="truncate">
+                {card.label}
+              </CardDescription>
               <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                 {card.value}
               </CardTitle>
@@ -112,7 +122,9 @@ async function DashboardOverview() {
                   className="flex items-center justify-between gap-4 rounded-lg border px-4 py-3"
                 >
                   <div className="min-w-0">
-                    <div className="truncate text-sm font-medium">{recipe.name}</div>
+                    <div className="truncate text-sm font-medium">
+                      {recipe.name}
+                    </div>
                     {recipe.description ? (
                       <div className="truncate text-xs text-muted-foreground">
                         {recipe.description}
@@ -121,10 +133,18 @@ async function DashboardOverview() {
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     <Badge variant="secondary" className="text-xs">
-                      {recipe.items.length}
+                      {recipe.groups.reduce(
+                        (sum, g) => sum + 1 + g.alternatives.length,
+                        0
+                      )}
                     </Badge>
                     <span className="text-sm font-medium tabular-nums">
-                      {money(recipe.totalCents)}
+                      {recipe.hasRange
+                        ? tRecipes("overview.avgCostRange", {
+                            low: money(recipe.totalLowCents),
+                            high: money(recipe.totalHighCents),
+                          })
+                        : money(recipe.totalLowCents)}
                     </span>
                   </div>
                 </div>
