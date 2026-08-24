@@ -224,3 +224,14 @@ pnpm run lint
 pnpm run test
 pnpm run build
 ```
+
+## Deployment
+
+Coolify's Dockerfile build pack, on a Proxmox homelab
+([simplab](https://github.com/eduvhc/simplab)). The UI steps, the environment
+variables it needs, the required `licorice-data` volume, and how migrations run
+on container start are all in **[DEPLOY.md](DEPLOY.md)** — the deploy record
+lives here, next to the code Coolify builds, not in the homelab repo.
+
+Note the root `docker-compose.yml` is the _local development_ stack (Mailpit),
+not the deployment.
