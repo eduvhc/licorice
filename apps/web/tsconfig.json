@@ -1,8 +1,14 @@
 {
   "extends": "@workspace/typescript-config/nextjs.json",
   "compilerOptions": {
+    // @workspace/db is consumed as source and its own imports carry .ts
+    // extensions, because Node executes that package directly. Next never
+    // emits, so allowing it here costs nothing.
+    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./*"],
+      "@workspace/db": ["../../packages/db/src/index.ts"],
+      "@workspace/db/*": ["../../packages/db/src/*"],
       "@workspace/ui/*": ["../../packages/ui/src/*"]
     },
     "plugins": [

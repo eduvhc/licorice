@@ -1,11 +1,14 @@
+# Binaries are resolved through pnpm rather than by path: with a hoisted
+# node_modules there is no apps/web/node_modules/.bin, and hardcoding either
+# layout breaks the hook the next time the layout changes.
 pre-commit:
   parallel: true
   commands:
     format:
       glob: "*.{ts,tsx,md,json}"
-      run: node_modules/.bin/prettier --write {staged_files}
+      run: pnpm exec prettier --write {staged_files}
       stage_fixed: true
     lint:
       glob: "apps/web/**/*.{ts,tsx}"
-      run: "cd apps/web && node_modules/.bin/eslint --fix $(echo {staged_files} | sed 's#apps/web/##g')"
+      run: "pnpm --filter web exec eslint --fix $(echo {staged_files} | sed 's#apps/web/##g')"
       stage_fixed: true

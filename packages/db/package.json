@@ -1,0 +1,38 @@
+{
+  "name": "@workspace/db",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "license": "PROPRIETARY",
+  "scripts": {
+    "migrate": "node src/migrate.ts",
+    "migrate:make": "kysely migrate:make",
+    "migrate:list": "kysely migrate:list",
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.ts\"",
+    "typecheck": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "better-auth": "^1.7.0",
+    "better-sqlite3": "^13.0.3",
+    "kysely": "^0.29.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@typescript/native-preview": "latest",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9",
+    "kysely-ctl": "^0.21.0",
+    "typescript": "^6.0.2"
+  },
+  "//files": "What the deployed migrator needs, and nothing else. tsconfig.json is deliberately absent: jiti reads it before loading the config, and its `extends` points at @workspace/typescript-config — a devDependency that a --prod deploy correctly leaves out, so shipping it fails with \"File '@workspace/typescript-config/base.json' not found\".",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  }
+}

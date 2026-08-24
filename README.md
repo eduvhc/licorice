@@ -16,16 +16,16 @@ Idiomatic `Next.js 16` monorepo template with `React 19`, `shadcn/ui`, `Better A
 - `vitest` for unit tests, GitHub Actions CI (`.github/workflows/ci.yml`), `lefthook` pre-commit lint/format
 - `@typescript/native-preview` via `tsgo`
 - `shadcn/ui` in `packages/ui`
-- `bun` workspaces + `turbo`
+- `pnpm` workspaces + `turbo`, on Node 26
 
 ## Getting started
 
 ```bash
-bun install
-bunx lefthook install       # once, wires up pre-commit lint/format
+pnpm install
+pnpm dlx lefthook install       # once, wires up pre-commit lint/format
 cp apps/web/.env.example apps/web/.env
-(cd apps/web && bun run db:migrate)
-bun run dev
+(cd apps/web && pnpm run db:migrate)
+pnpm run dev
 ```
 
 `BETTER_AUTH_SECRET` needs a real value (`openssl rand -hex 32`); everything else in `.env.example` is optional and documented inline.
@@ -150,7 +150,7 @@ Provider-agnostic transactional email, so a new idea can send mail on day one an
 Preview templates locally (hot reload, desktop/mobile toggle, no email sent):
 
 ```bash
-bun run email:dev   # from apps/web — http://localhost:3001
+pnpm run email:dev   # from apps/web — http://localhost:3001
 ```
 
 Adding a provider (e.g. Resend later): implement `Mailer` in a new `lib/providers/*.ts` file and add one branch to `mailer.ts` — nothing else changes.
@@ -158,7 +158,7 @@ Adding a provider (e.g. Resend later): implement `Mailer` in a new `lib/provider
 Testing the SMTP path locally without a real inbox — `docker-compose.yml` ships a [Mailpit](https://github.com/axllent/mailpit) service:
 
 ```bash
-bun run mail:up     # starts Mailpit — SMTP at :1025, web UI at http://localhost:8025
+pnpm run mail:up     # starts Mailpit — SMTP at :1025, web UI at http://localhost:8025
 ```
 
 Point `SMTP_HOST=localhost` / `SMTP_PORT=1025` at it in `.env` to route real SMTP sends there instead of the console fallback.
@@ -177,9 +177,9 @@ Point `SMTP_HOST=localhost` / `SMTP_PORT=1025` at it in `.env` to route real SMT
 
 ## Testing & CI
 
-- `vitest` (`apps/web/vitest.config.ts`), run with `bun run test`; seed tests at `lib/env.test.ts` and `features/auth/lib/auth-providers.test.ts` as copy-pasteable examples for new slices
+- `vitest` (`apps/web/vitest.config.ts`), run with `pnpm run test`; seed tests at `lib/env.test.ts` and `features/auth/lib/auth-providers.test.ts` as copy-pasteable examples for new slices
 - `.github/workflows/ci.yml`: lint, typecheck, test, and build on every push/PR via `turbo`, using dummy auth env vars (no secrets required)
-- `lefthook.yml`: pre-commit hook runs `bun run format` and `bun run lint` (via `turbo`, same as CI); run `bunx lefthook install` once after cloning (see Getting started)
+- `lefthook.yml`: pre-commit hook runs `pnpm run format` and `pnpm run lint` (via `turbo`, same as CI); run `pnpm dlx lefthook install` once after cloning (see Getting started)
 
 ## Database & migrations
 
@@ -193,19 +193,19 @@ Kysely migrations via the official `kysely-ctl` CLI (dev dependency, configured 
 Workflow (from `apps/web`):
 
 ```bash
-bun run db:migrate         # kysely migrate:latest
-bun run db:migrate:make    # kysely migrate:make <name>
-bun run db:migrate:list    # kysely migrate:list
+pnpm run db:migrate         # kysely migrate:latest
+pnpm run db:migrate:make    # kysely migrate:make <name>
+pnpm run db:migrate:list    # kysely migrate:list
 ```
 
-To add a table: create a migration, add its types to `lib/app-db.ts`, then run `bun run db:migrate`.
+To add a table: create a migration, add its types to `lib/app-db.ts`, then run `pnpm run db:migrate`.
 
 ## Adding shadcn components
 
 Run from the repo root:
 
 ```bash
-bunx shadcn@latest add button -c apps/web
+pnpm dlx shadcn@latest add button -c apps/web
 ```
 
 Generated UI primitives land in `packages/ui/src/components`.
@@ -219,8 +219,8 @@ import { Button } from "@workspace/ui/components/button"
 ## Validation
 
 ```bash
-bun run typecheck
-bun run lint
-bun run test
-bun run build
+pnpm run typecheck
+pnpm run lint
+pnpm run test
+pnpm run build
 ```

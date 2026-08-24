@@ -1,0 +1,32 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Flat node_modules, like npm's — pnpm's own recommendation for deployment
+# tooling that does not follow symlinks. Next's standalone output is exactly
+# that: with the default isolated layout every package lives under
+# node_modules/.pnpm with only a symlink at the top level, the trace copies the
+# real files but not a usable link, and the image dies on
+# "Cannot find package 'better-sqlite3'". The cost is losing pnpm's protection
+# against importing a package this repo never declared.
+nodeLinker: hoisted
+
+# pnpm refuses to run a dependency's build script unless it is allowed here
+# (`allowBuilds`, which replaced v10's `onlyBuiltDependencies`). Silence is the
+# dangerous failure: better-sqlite3 without its install script has no native
+# binding, so the image builds cleanly and then dies on the first query.
+# Everything below either compiles or downloads a native binary.
+allowBuilds:
+  "@parcel/watcher": true
+  "@sentry/cli": true
+  "@swc/core": true
+  # false, deliberately. better-sqlite3 declares no install script; the
+  # `node-gyp rebuild` is pnpm's automatic fallback for any package carrying a
+  # binding.gyp. It ships prebuilt binaries and lib/binding.js loads them from
+  # prebuilds/<target>.node, so compiling produces a binary nothing ever reads —
+  # while requiring python3/make/g++ that node:slim does not have.
+  better-sqlite3: false
+  esbuild: true
+  lefthook: true
+  sharp: true
+  unrs-resolver: true

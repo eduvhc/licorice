@@ -17,12 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: pnpm/action-setup@v4
         with:
-          bun-version: latest
+          version: 11.23.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.7.0
+          cache: pnpm
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Lint, typecheck, test, build
-        run: bunx turbo lint typecheck test build
+        run: pnpm exec turbo lint typecheck test build

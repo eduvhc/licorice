@@ -33,11 +33,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  // bun.lock isn't in Next's monorepo-root auto-detection list, so without
-  // this it traces from an inferred root several levels too high (leaking
-  // unrelated parent directories into .next/standalone's path structure).
+  // Pin the tracing root at the monorepo root; left to inference it can climb
+  // several levels too high and leak unrelated parent directories into
+  // .next/standalone's path structure.
   outputFileTracingRoot: path.join(__dirname, "../.."),
-  transpilePackages: ["@workspace/ui"],
+  transpilePackages: ["@workspace/db", "@workspace/ui"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }]
   },

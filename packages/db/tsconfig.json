@@ -1,0 +1,15 @@
+{
+  "extends": "@workspace/typescript-config/base.json",
+  "compilerOptions": {
+    // Node runs these files directly, and an ESM import specifier must carry
+    // its extension — so the source says "./paths.ts". TypeScript only permits
+    // that when it is not emitting, which is the case here: tsgo --noEmit
+    // type-checks, and nothing compiles this package.
+    "allowImportingTsExtensions": true,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
+}

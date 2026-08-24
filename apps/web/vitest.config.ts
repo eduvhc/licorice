@@ -16,6 +16,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // .next/standalone contains a copy of this source tree, so without this
+    // every test file is collected and run twice — once from the working tree
+    // and once from whatever the last build froze in there.
+    exclude: ["**/node_modules/**", "**/.next/**"],
     env: {
       BETTER_AUTH_SECRET: "test-secret",
       BETTER_AUTH_URL: "http://localhost:3000",

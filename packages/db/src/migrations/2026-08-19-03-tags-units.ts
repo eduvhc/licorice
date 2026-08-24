@@ -27,7 +27,14 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db
     .insertInto("units")
-    .values([{ name: "un" }, { name: "ml" }, { name: "cl" }, { name: "L" }, { name: "g" }, { name: "kg" }])
+    .values([
+      { name: "un" },
+      { name: "ml" },
+      { name: "cl" },
+      { name: "L" },
+      { name: "g" },
+      { name: "kg" },
+    ])
     .execute()
 
   await db.schema

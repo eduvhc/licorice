@@ -1,28 +1,19 @@
-import path from "node:path"
-
+/**
+ * Better Auth's own database. Its schema is owned by Better Auth and created
+ * by @workspace/db's migrate step, not by this app.
+ */
 import Database from "better-sqlite3"
-import { Kysely, SqliteDialect } from "kysely"
+import { Kysely } from "kysely"
+import { SqliteDialect } from "kysely"
+
+import { authDatabasePath } from "@workspace/db"
 
 type DatabaseSchema = Record<string, never>
 
-function resolveDatabasePath() {
-  const databaseUrl = process.env.DATABASE_URL
-
-  if (!databaseUrl) {
-    return path.join(process.cwd(), "better-auth.db")
-  }
-
-  return path.isAbsolute(databaseUrl)
-    ? databaseUrl
-    : path.join(process.cwd(), databaseUrl)
-}
-
-export const databasePath = resolveDatabasePath()
-
-const sqlite = new Database(databasePath)
+export const databasePath = authDatabasePath()
 
 export const db = new Kysely<DatabaseSchema>({
   dialect: new SqliteDialect({
-    database: sqlite,
+    database: new Database(databasePath),
   }),
 })
