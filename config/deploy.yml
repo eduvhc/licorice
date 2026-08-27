@@ -43,3 +43,6 @@ volumes:
 
 ssh:
   user: eduvhc
+  key_data:
+    - KAMAL_SSH_PRIVATE_KEY
+  keys_only: true
