@@ -11,7 +11,7 @@ servers:
       - 192.168.50.64
 
 proxy:
-  host: licorice.home.iedora.com
+  host: licorice.iedora.com
   app_port: 3000
   ssl: false
   healthcheck:
@@ -30,7 +30,7 @@ builder:
 
 env:
   clear:
-    BETTER_AUTH_URL: https://licorice.home.iedora.com
+    BETTER_AUTH_URL: https://licorice.iedora.com
     DATABASE_URL: /app/data/better-auth.db
     APP_DATABASE_URL: /app/data/app.db
     EMAIL_FROM: onboarding@iedora.com
