@@ -31,6 +31,7 @@ jobs:
       - name: Build image
         run: |
           docker build --pull \
+            --label service=licorice \
             --label org.opencontainers.image.source="${{ forgejo.server_url }}/${{ forgejo.repository }}" \
             --label org.opencontainers.image.revision="${{ forgejo.sha }}" \
             --tag "$IMAGE:sha-${{ forgejo.sha }}" \
