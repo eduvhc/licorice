@@ -1,0 +1,39 @@
+service: licorice
+image: git.home.iedora.com/iedora/licorice
+
+servers:
+  web:
+    hosts:
+      - 192.168.50.64
+
+proxy:
+  host: licorice.home.iedora.com
+  app_port: 3000
+  ssl: false
+  healthcheck:
+    path: /health
+
+registry:
+  server: git.home.iedora.com
+  username: eduvhc
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+
+env:
+  clear:
+    BETTER_AUTH_URL: https://licorice.home.iedora.com
+    DATABASE_URL: /app/data/better-auth.db
+    APP_DATABASE_URL: /app/data/app.db
+    EMAIL_FROM: onboarding@iedora.com
+    LOG_LEVEL: info
+  secret:
+    - BETTER_AUTH_SECRET
+
+volumes:
+  - licorice-data:/app/data
+
+ssh:
+  user: eduvhc

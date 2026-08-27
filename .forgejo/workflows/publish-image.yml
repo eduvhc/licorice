@@ -41,3 +41,29 @@ jobs:
         run: |
           docker push "$IMAGE:sha-${{ forgejo.sha }}"
           docker push "$IMAGE:latest"
+
+  deploy:
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.REGISTRY_TOKEN }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      KAMAL_SSH_PRIVATE_KEY: ${{ secrets.KAMAL_SSH_PRIVATE_KEY }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Kamal
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends ruby-full openssh-client
+          gem install kamal --version 2.12.0 --no-document
+
+      - name: Configure deployment key
+        run: |
+          install --directory --mode 0700 ~/.ssh
+          printf '%s\n' "$KAMAL_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 0600 ~/.ssh/id_ed25519
+
+      - name: Deploy published image
+        run: kamal deploy --skip-push --version "sha-${{ forgejo.sha }}"
