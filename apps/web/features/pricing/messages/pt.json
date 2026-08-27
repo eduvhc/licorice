@@ -1,0 +1,64 @@
+{
+  "title": "Preços",
+  "description": "Gira lojas e preços por requisição para comparar o custo de cada receita.",
+  "retailers": {
+    "title": "Lojas",
+    "new": "Nova loja",
+    "edit": "Editar loja",
+    "delete": "Eliminar loja",
+    "empty": "Ainda não há lojas.",
+    "fields": {
+      "name": "Nome",
+      "namePlaceholder": "Continente",
+      "color": "Cor",
+      "url": "Site",
+      "urlPlaceholder": "https://www.exemplo.pt"
+    },
+    "table": {
+      "name": "Nome",
+      "url": "Site",
+      "offers": "Preços",
+      "actions": "Ações"
+    }
+  },
+  "offers": {
+    "title": "Preços",
+    "new": "Novo preço",
+    "edit": "Editar preço",
+    "delete": "Eliminar preço",
+    "empty": "Ainda não há preços registados.",
+    "fields": {
+      "retailer": "Loja",
+      "item": "Item",
+      "quantity": "Quantidade",
+      "unit": "Unidade",
+      "price": "Preço",
+      "pricePlaceholder": "7.90",
+      "url": "Link",
+      "urlPlaceholder": "https://www.exemplo.pt/produto"
+    },
+    "table": {
+      "retailer": "Loja",
+      "item": "Item",
+      "package": "Embalagem",
+      "price": "Preço",
+      "actions": "Ações"
+    }
+  },
+  "baskets": {
+    "title": "Custo por loja",
+    "empty": "Sem preços registados nas lojas. Adicione preços para comparar.",
+    "partial": "{percent}%",
+    "partialHint": "Nem todos os ingredientes têm preço nesta loja."
+  },
+  "errors": {
+    "invalid": "Verifique os campos do formulário.",
+    "inUse": "Ainda está em uso e não pode ser eliminada.",
+    "duplicate": "Esse nome já existe.",
+    "server": "Não foi possível guardar. Tente novamente."
+  },
+  "toast": {
+    "saved": "Guardado.",
+    "deleted": "Eliminado."
+  }
+}
