@@ -1,4 +1,8 @@
 service: licorice
+minimum_version: 2.12.0
+retain_containers: 3
+deploy_timeout: 60
+
 image: iedora/licorice
 
 servers:
@@ -12,6 +16,8 @@ proxy:
   ssl: false
   healthcheck:
     path: /health
+    interval: 3
+    timeout: 3
 
 registry:
   server: git.home.iedora.com
