@@ -46,7 +46,6 @@ import {
 } from "lucide-react"
 
 import type { Item } from "@/features/inventory/server/queries"
-import type { Unit } from "@/features/settings/server/queries"
 
 import { deletePriceOfferAction, savePriceOfferAction } from "../server/actions"
 import type { PriceOffer, Retailer } from "../server/queries"
@@ -55,13 +54,11 @@ function OfferForm({
   offer,
   retailers,
   items,
-  units,
   onDone,
 }: {
   offer?: PriceOffer
   retailers: Retailer[]
   items: Item[]
-  units: Unit[]
   onDone: () => void
 }) {
   const t = useTranslations("pricing")
@@ -73,16 +70,15 @@ function OfferForm({
   const [itemId, setItemId] = React.useState<string>(
     String(offer?.itemId ?? items[0]?.id ?? "")
   )
-  const [unitId, setUnitId] = React.useState<string>(
-    String(offer?.unitId ?? items[0]?.unit.id ?? "")
-  )
   const [, startTransition] = React.useTransition()
 
-  function selectItem(id: string) {
-    setItemId(id)
-    const item = items.find((candidate) => String(candidate.id) === id)
-    if (item) setUnitId(String(item.unit.id))
-  }
+  const selectedItem = items.find(
+    (candidate) => String(candidate.id) === itemId
+  )
+  const retailName =
+    retailers.find((candidate) => String(candidate.id) === retailerId)?.name ??
+    ""
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
@@ -94,8 +90,7 @@ function OfferForm({
 
     if (
       !retailerId ||
-      !itemId ||
-      !unitId ||
+      !selectedItem ||
       Number.isNaN(quantity) ||
       quantity <= 0 ||
       Number.isNaN(price) ||
@@ -109,8 +104,8 @@ function OfferForm({
       const result = await savePriceOfferAction(
         {
           retailerId: Number(retailerId),
-          itemId: Number(itemId),
-          unitId: Number(unitId),
+          itemId: selectedItem.id,
+          unitId: selectedItem.unit.id,
           quantity,
           priceCents: Math.round(price * 100),
           url,
@@ -139,7 +134,7 @@ function OfferForm({
             onValueChange={(value) => setRetailerId(value ?? "")}
           >
             <SelectTrigger id="offer-retailer" className="w-full">
-              <SelectValue />
+              <SelectValue>{retailName}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {retailers.map((retailer) => (
@@ -156,10 +151,10 @@ function OfferForm({
           </FieldLabel>
           <Select
             value={itemId}
-            onValueChange={(value) => selectItem(value ?? "")}
+            onValueChange={(value) => setItemId(value ?? "")}
           >
             <SelectTrigger id="offer-item" className="w-full">
-              <SelectValue />
+              <SelectValue>{selectedItem?.name ?? ""}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {items.map((item) => (
@@ -170,42 +165,20 @@ function OfferForm({
             </SelectContent>
           </Select>
         </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field>
-            <FieldLabel htmlFor="offer-quantity">
-              {t("offers.fields.quantity")}
-            </FieldLabel>
-            <Input
-              id="offer-quantity"
-              name="quantity"
-              type="number"
-              inputMode="numeric"
-              min={1}
-              defaultValue={offer?.quantity}
-              required
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="offer-unit">
-              {t("offers.fields.unit")}
-            </FieldLabel>
-            <Select
-              value={unitId}
-              onValueChange={(value) => setUnitId(value ?? "")}
-            >
-              <SelectTrigger id="offer-unit" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map((unit) => (
-                  <SelectItem key={unit.id} value={String(unit.id)}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
+        <Field>
+          <FieldLabel htmlFor="offer-quantity">
+            {t("offers.fields.quantity")}
+          </FieldLabel>
+          <Input
+            id="offer-quantity"
+            name="quantity"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            defaultValue={offer?.quantity}
+            required
+          />
+        </Field>
         <Field>
           <FieldLabel htmlFor="offer-price">
             {t("offers.fields.price")}
@@ -246,12 +219,10 @@ export function OffersPanel({
   offers,
   retailers,
   items,
-  units,
 }: {
   offers: PriceOffer[]
   retailers: Retailer[]
   items: Item[]
-  units: Unit[]
 }) {
   const t = useTranslations("pricing")
   const router = useRouter()
@@ -289,7 +260,6 @@ export function OffersPanel({
             <OfferForm
               retailers={retailers}
               items={items}
-              units={units}
               onDone={() => setOpenNew(false)}
             />
           </DialogContent>
@@ -400,7 +370,6 @@ export function OffersPanel({
               offer={editTarget}
               retailers={retailers}
               items={items}
-              units={units}
               onDone={() => setEditTarget(null)}
             />
           ) : null}

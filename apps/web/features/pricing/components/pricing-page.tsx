@@ -8,7 +8,6 @@ import {
 } from "@workspace/ui/components/card"
 
 import { listItems } from "@/features/inventory/server/queries"
-import { listUnits } from "@/features/settings/server/queries"
 
 import { OffersPanel } from "./offers-panel"
 import { RetailersPanel } from "./retailers-panel"
@@ -16,11 +15,10 @@ import { listPriceOffers, listRetailers } from "../server/queries"
 
 export async function PricingPage() {
   const t = await getTranslations("pricing")
-  const [retailers, offers, items, units] = await Promise.all([
+  const [retailers, offers, items] = await Promise.all([
     listRetailers(),
     listPriceOffers(),
     listItems(),
-    listUnits(),
   ])
 
   const offerCountByRetailer = new Map<number, number>()
@@ -57,12 +55,7 @@ export async function PricingPage() {
           <CardTitle className="text-base">{t("offers.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <OffersPanel
-            offers={offers}
-            retailers={retailers}
-            items={items}
-            units={units}
-          />
+          <OffersPanel offers={offers} retailers={retailers} items={items} />
         </CardContent>
       </Card>
     </div>
