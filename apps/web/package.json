@@ -11,6 +11,7 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsgo --noEmit",
     "test": "vitest run",
+    "db:migrate": "node --env-file-if-exists=.env ../../packages/db/src/migrate.ts",
     "email:dev": "email dev --dir features/email/templates --port 3001",
     "db:recipes:import": "tsx scripts/import.ts",
     "db:items:refresh-tags": "tsx scripts/refresh-item-tags.ts",

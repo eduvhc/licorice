@@ -24,11 +24,11 @@ Idiomatic `Next.js 16` monorepo template with `React 19`, `shadcn/ui`, `Better A
 pnpm install
 pnpm dlx lefthook install       # once, wires up pre-commit lint/format
 cp apps/web/.env.example apps/web/.env
-(cd apps/web && pnpm run db:migrate)
+pnpm run db:migrate
 pnpm run dev
 ```
 
-`BETTER_AUTH_SECRET` needs a real value (`openssl rand -hex 32`); everything else in `.env.example` is optional and documented inline.
+`BETTER_AUTH_SECRET` needs a real value (`openssl rand -hex 32`); `BETTER_AUTH_URL` and the two `*DATABASE_URL` lines come filled in `.env.example`; everything else there is optional and documented inline.
 
 ## App conventions
 
@@ -132,7 +132,7 @@ Adding a locale: add it to `i18n/routing.ts` and create the matching `messages/*
 Validated once at import time via `apps/web/lib/env.ts` (`zod`) — the app fails fast with a readable error if a required var is missing, instead of failing later at the call site. See `apps/web/.env.example` for the full list; copy it to `.env` to get started.
 
 - required: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `DATABASE_URL`
-- optional, each pair enables the OAuth provider: `GITHUB_CLIENT_ID`/`SECRET`, `GOOGLE_CLIENT_ID`/`SECRET`, `DISCORD_CLIENT_ID`/`SECRET`, `APPLE_CLIENT_ID`/`SECRET`
+- optional, each pair enables the OAuth provider: `GITHUB_CLIENT_ID`/`SECRET`, `GOOGLE_CLIENT_ID`/`SECRET`, `DISCORD_CLIENT_ID`/`SECRET`, `APPLE_CLIENT_ID`/`SECRET` — see `AUTH.md` for the Google OAuth client + redirect URI setup
 - optional, enables SMTP sending: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, plus `EMAIL_FROM`
 - optional, enables Sentry: `SENTRY_DSN` (server/edge), `NEXT_PUBLIC_SENTRY_DSN` (browser), `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` (build-time source map upload only)
 - optional: `LOG_LEVEL` (defaults to `info`)

@@ -1,6 +1,6 @@
 import path from "node:path"
 import { readdir } from "node:fs/promises"
-import { fileURLToPath } from "node:url"
+import { fileURLToPath, pathToFileURL } from "node:url"
 
 import Database from "better-sqlite3"
 import { Kysely, SqliteDialect } from "kysely"
@@ -37,6 +37,10 @@ async function migrateApp() {
       fs: { readdir },
       path,
       migrationFolder,
+      // FileMigrationProvider's default `import()` is handed a raw filesystem
+      // path, which the ESM loader rejects on Windows (`c:\…` is not a URL).
+      // Load every migration through a file:// URL so it works on both.
+      import: (filePath) => import(pathToFileURL(filePath).href),
       // A migration that is quietly skipped is the worst outcome: the app
       // starts, and the missing column surfaces later as a query error. Refuse
       // to run rather than run a set that is not the set on disk.

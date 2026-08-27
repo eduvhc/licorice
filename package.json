@@ -9,7 +9,7 @@
     "format": "turbo format",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
-    "db:migrate": "pnpm --filter @workspace/db run migrate",
+    "db:migrate": "pnpm --filter web run db:migrate",
     "db:migrate:make": "pnpm --filter @workspace/db run migrate:make",
     "db:migrate:list": "pnpm --filter @workspace/db run migrate:list",
     "mail:up": "docker compose up mailpit -d",

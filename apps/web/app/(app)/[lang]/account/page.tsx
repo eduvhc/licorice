@@ -1,24 +1,25 @@
-import { hasLocale } from "next-intl"
-import { notFound } from "next/navigation"
-
-import { requireSession } from "@/features/auth/server/session"
 import { AccountPage } from "@/features/account/components/account-page"
-import { routing } from "@/i18n/routing"
+import { getEnabledAuthProviders } from "@/features/auth/lib/auth-providers"
+import { listLinkedAccounts } from "@/features/auth/server/queries"
+import { requireSession } from "@/features/auth/server/session"
 
 type AccountRouteProps = {
-  params: Promise<{
-    lang: string
-  }>
   searchParams: Promise<{
     error?: string
   }>
 }
 
-export default async function Page({ params, searchParams }: AccountRouteProps) {
-  const { lang } = await params
-  if (!hasLocale(routing.locales, lang)) notFound()
+export default async function Page({ searchParams }: AccountRouteProps) {
   const { error } = await searchParams
   const session = await requireSession()
+  const accounts = await listLinkedAccounts()
 
-  return <AccountPage error={error} session={session} />
+  return (
+    <AccountPage
+      error={error}
+      accounts={accounts}
+      providers={getEnabledAuthProviders()}
+      session={session}
+    />
+  )
 }

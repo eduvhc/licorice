@@ -37,6 +37,9 @@ env:
     LOG_LEVEL: info
   secret:
     - BETTER_AUTH_SECRET
+    # Google sign-in turns itself on once both are present (see AUTH.md).
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_SECRET
 
 volumes:
   - licorice-data:/app/data

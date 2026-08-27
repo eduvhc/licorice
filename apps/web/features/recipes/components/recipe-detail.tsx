@@ -18,8 +18,6 @@ import {
 
 import { isTagColor, tagColorDot } from "@/features/settings/lib/tag-colors"
 import type { Bottle } from "@/features/settings/server/queries"
-import { RecipeBasket } from "@/features/pricing/components/recipe-basket"
-import type { RetailerBasketWithMeta } from "@/features/pricing/server/queries"
 import { Link, useRouter } from "@/i18n/navigation"
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -317,11 +315,12 @@ function BottlePriceCard({
 function RecipeDetail({
   recipe,
   bottles,
-  baskets,
+  pricingSlot,
 }: {
   recipe: RecipeWithItems
   bottles: Bottle[]
-  baskets: RetailerBasketWithMeta[]
+  /** Cost-by-shop panel, injected by the route so this slice stays pricing-agnostic. */
+  pricingSlot?: React.ReactNode
 }) {
   const t = useTranslations("recipes")
   const format = useFormatter()
@@ -548,7 +547,7 @@ function RecipeDetail({
             )}
           </div>
 
-          <RecipeBasket baskets={baskets} />
+          {pricingSlot}
         </div>
       </div>
     </div>

@@ -38,8 +38,9 @@ rollback without unbounded disk growth.
 
 `--skip-push` is intentional: Kamal deploys the image that the workflow already
 published instead of rebuilding it. The Forgejo secrets `REGISTRY_TOKEN`,
-`BETTER_AUTH_SECRET`, and `KAMAL_SSH_PRIVATE_KEY` are reconciled by the
-homelab Ansible role.
+`BETTER_AUTH_SECRET`, `KAMAL_SSH_PRIVATE_KEY`, and — for Google sign-in —
+`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are reconciled by the homelab
+Ansible role. See `AUTH.md` for the Google OAuth client setup.
 
 ## Data
 

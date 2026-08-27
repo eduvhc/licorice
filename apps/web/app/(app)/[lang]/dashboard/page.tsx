@@ -1,18 +1,5 @@
-import { hasLocale } from "next-intl"
-import { notFound } from "next/navigation"
-
 import { DashboardOverview } from "@/features/dashboard/components/dashboard-overview"
-import { routing } from "@/i18n/routing"
 
-type DashboardRouteProps = {
-  params: Promise<{
-    lang: string
-  }>
-}
-
-export default async function Page({ params }: DashboardRouteProps) {
-  const { lang } = await params
-  if (!hasLocale(routing.locales, lang)) notFound()
-
+export default function Page() {
   return <DashboardOverview />
 }

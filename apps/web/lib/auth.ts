@@ -31,6 +31,9 @@ const socialProviders = {
         google: {
           clientId: env.GOOGLE_CLIENT_ID!,
           clientSecret: env.GOOGLE_CLIENT_SECRET!,
+          // Always let the user pick which Google account to use rather than
+          // silently reusing the one the browser is already signed into.
+          prompt: "select_account" as const,
         },
       }
     : {}),
@@ -53,12 +56,24 @@ const socialProviders = {
 }
 
 export const auth = betterAuth({
+  // Explicit so the OAuth callback URL Better Auth sends to providers is built
+  // from the public origin, not an inferred request host.
+  baseURL: env.BETTER_AUTH_URL,
   database: new SqliteDialect({
     database: sqlite,
   }),
   advanced: {
     database: {
       joins: true,
+    },
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      // Google verifies the email it returns, so a Google sign-in is allowed
+      // to attach itself to an existing account with the same (already
+      // verified) email instead of failing with account_not_linked.
+      trustedProviders: ["google"],
     },
   },
   emailAndPassword: {

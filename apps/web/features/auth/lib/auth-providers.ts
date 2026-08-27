@@ -1,8 +1,6 @@
 import { env } from "@/lib/env"
 
-export type SocialProvider = "apple" | "discord" | "github" | "google"
-
-export type EnabledAuthProviders = Partial<Record<SocialProvider, boolean>>
+import type { EnabledAuthProviders } from "./social-providers"
 
 export function getEnabledAuthProviders(): EnabledAuthProviders {
   return {

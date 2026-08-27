@@ -10,7 +10,29 @@
       "discord": "Discord",
       "github": "GitHub",
       "google": "Google"
+    },
+    "errors": {
+      "account_not_linked": "Ja existe uma conta com este email. Entre primeiro com a sua palavra-passe e depois associe este provider na pagina de conta.",
+      "email_not_found": "Esse provider nao partilhou um endereco de email, por isso nao conseguimos iniciar a sessao.",
+      "email_not_verified": "Verifique o seu endereco de email antes de entrar com este provider.",
+      "email_does_not_match": "O email desse provider nao corresponde a esta conta.",
+      "unable_to_link_account": "Nao foi possivel associar esse provider. Tente novamente.",
+      "account_already_linked_to_different_user": "Essa conta do provider ja esta associada a outro utilizador."
     }
+  },
+  "connectedAccounts": {
+    "title": "Contas associadas",
+    "description": "Inicie sessao na sua conta com qualquer uma destas.",
+    "password": "Email e palavra-passe",
+    "passwordHint": "Definida quando criou a conta.",
+    "providers": {
+      "github": "GitHub",
+      "google": "Google"
+    },
+    "connected": "Associada",
+    "notConnected": "Nao associada",
+    "connect": "Associar",
+    "disconnect": "Remover"
   },
   "signIn": {
     "title": "Bem-vindo de volta",

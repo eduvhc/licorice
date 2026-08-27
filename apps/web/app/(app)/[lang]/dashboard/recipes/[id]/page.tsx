@@ -1,23 +1,19 @@
-import { hasLocale } from "next-intl"
 import { notFound } from "next/navigation"
 
+import { RecipeBasket } from "@/features/pricing/components/recipe-basket"
+import { getRecipeRetailerBaskets } from "@/features/pricing/server/queries"
 import { RecipeDetail } from "@/features/recipes/components/recipe-detail"
 import { getRecipe } from "@/features/recipes/server/queries"
-import { getRecipeRetailerBaskets } from "@/features/pricing/server/queries"
 import { listBottles } from "@/features/settings/server/queries"
-import { routing } from "@/i18n/routing"
 
 type RecipeDetailRouteProps = {
   params: Promise<{
-    lang: string
     id: string
   }>
 }
 
 export default async function Page({ params }: RecipeDetailRouteProps) {
-  const { lang, id } = await params
-  if (!hasLocale(routing.locales, lang)) notFound()
-
+  const { id } = await params
   const recipeId = Number(id)
   if (!Number.isInteger(recipeId) || recipeId <= 0) notFound()
 
@@ -28,5 +24,11 @@ export default async function Page({ params }: RecipeDetailRouteProps) {
   ])
   if (!recipe) notFound()
 
-  return <RecipeDetail recipe={recipe} bottles={bottles} baskets={baskets} />
+  return (
+    <RecipeDetail
+      recipe={recipe}
+      bottles={bottles}
+      pricingSlot={<RecipeBasket baskets={baskets} />}
+    />
+  )
 }

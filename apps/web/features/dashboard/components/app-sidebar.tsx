@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useTranslations } from "next-intl"
 
 import { NavUser } from "./nav-user"
@@ -26,8 +25,7 @@ import {
   SettingsIcon,
 } from "lucide-react"
 
-import { Link as I18nLink } from "@/i18n/navigation"
-import { usePathname } from "@/i18n/navigation"
+import { Link, usePathname } from "@/i18n/navigation"
 
 const mainNav = [
   { key: "overview", href: "/dashboard", icon: LayoutDashboardIcon },
@@ -57,7 +55,7 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<I18nLink href="/" />}
+              render={<Link href="/" />}
             >
               <CommandIcon className="size-5!" />
               <span className="text-base font-semibold">{t("brand")}</span>

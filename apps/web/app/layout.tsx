@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { NextIntlClientProvider } from "next-intl"
 import { getLocale } from "next-intl/server"
 
 import "@workspace/ui/globals.css"
@@ -18,15 +17,10 @@ export default async function RootLayout({
   const locale = await getLocale()
 
   return (
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className="antialiased"
-    >
+    <html lang={locale} suppressHydrationWarning className="antialiased">
       <body>
-        <NextIntlClientProvider>
-          <AppProviders>{children}</AppProviders>
-        </NextIntlClientProvider>
+        {/* NextIntlClientProvider is mounted per-locale in app/(app|marketing)/[lang]/layout.tsx */}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )

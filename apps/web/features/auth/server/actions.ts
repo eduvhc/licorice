@@ -2,12 +2,13 @@
 
 import { headers } from "next/headers"
 import { redirect as nextRedirect } from "next/navigation"
+import type { Locale } from "next-intl"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import { auth } from "@/lib/auth"
 import { redirect } from "@/i18n/navigation"
 
-import type { SocialProvider } from "../lib/auth-providers"
+import type { SocialProvider } from "../lib/social-providers"
 
 async function getErrorMessage(error: unknown) {
   if (error instanceof Error && error.message) {
@@ -18,51 +19,83 @@ async function getErrorMessage(error: unknown) {
   return t("genericError")
 }
 
-async function authFailure(error: string) {
+/** Locale-prefixed redirect to `pathname` carrying `?error=` (and any extra query). */
+async function redirectWithError(
+  pathname: string,
+  message: string,
+  extra?: Record<string, string>
+) {
   redirect({
-    href: { pathname: "/login", query: { error } },
+    href: { pathname, query: { ...extra, error: message } },
     locale: await getLocale(),
   })
 }
 
-export async function signInWithEmailAction(formData: FormData) {
-  const email = String(formData.get("email") ?? "")
-  const password = String(formData.get("password") ?? "")
+const authFailure = (message: string) => redirectWithError("/login", message)
+
+/** Run an email auth call, then land on the dashboard (or back on /login with the error). */
+async function completeEmailAuth(call: Promise<unknown>, locale: Locale) {
+  try {
+    await call
+  } catch (error) {
+    await authFailure(await getErrorMessage(error))
+  }
+  redirect({ href: "/dashboard", locale })
+}
+
+/**
+ * Better Auth's signInSocial / linkSocialAccount both return `{ url }` — the
+ * provider's authorize URL — and expect the caller to redirect there; if none
+ * comes back we fall back to a locale-prefixed path.
+ */
+async function redirectToProvider(
+  call: Promise<unknown>,
+  locale: Locale,
+  onError: (message: string) => Promise<void>,
+  fallbackPath: string
+) {
+  let url: string | undefined
 
   try {
-    await auth.api.signInEmail({
-      body: {
-        email,
-        password,
-        callbackURL: "/dashboard",
-      },
-    })
+    const result = await call
+    const value =
+      result && typeof result === "object" && "url" in result
+        ? (result as { url?: unknown }).url
+        : undefined
+    if (typeof value === "string") url = value
   } catch (error) {
-    authFailure(await getErrorMessage(error))
+    await onError(await getErrorMessage(error))
   }
 
-  redirect({ href: "/dashboard", locale: await getLocale() })
+  if (url) nextRedirect(url)
+  redirect({ href: fallbackPath, locale })
+}
+
+export async function signInWithEmailAction(formData: FormData) {
+  await completeEmailAuth(
+    auth.api.signInEmail({
+      body: {
+        email: String(formData.get("email") ?? ""),
+        password: String(formData.get("password") ?? ""),
+        callbackURL: "/dashboard",
+      },
+    }),
+    await getLocale()
+  )
 }
 
 export async function signUpWithEmailAction(formData: FormData) {
-  const name = String(formData.get("name") ?? "")
-  const email = String(formData.get("email") ?? "")
-  const password = String(formData.get("password") ?? "")
-
-  try {
-    await auth.api.signUpEmail({
+  await completeEmailAuth(
+    auth.api.signUpEmail({
       body: {
-        name,
-        email,
-        password,
+        name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        password: String(formData.get("password") ?? ""),
         callbackURL: "/dashboard",
       },
-    })
-  } catch (error) {
-    authFailure(await getErrorMessage(error))
-  }
-
-  redirect({ href: "/dashboard", locale: await getLocale() })
+    }),
+    await getLocale()
+  )
 }
 
 export async function signInWithSocialAction(
@@ -70,29 +103,60 @@ export async function signInWithSocialAction(
   formData: FormData
 ) {
   void formData
+  const locale = await getLocale()
 
-  let url: string | null = null
-
-  try {
-    const result = await auth.api.signInSocial({
+  await redirectToProvider(
+    auth.api.signInSocial({
       body: {
         provider,
-        callbackURL: "/dashboard",
+        // Better Auth performs these redirects itself on the OAuth callback
+        // request, so they must carry the locale prefix — there is no
+        // middleware to add it after the fact. On failure it appends
+        // `?error=<code>` to errorCallbackURL.
+        callbackURL: `/${locale}/dashboard`,
+        newUserCallbackURL: `/${locale}/dashboard`,
+        errorCallbackURL: `/${locale}/login`,
       },
+    }),
+    locale,
+    authFailure,
+    "/login"
+  )
+}
+
+export async function linkSocialAction(
+  provider: SocialProvider,
+  formData: FormData
+) {
+  void formData
+  const locale = await getLocale()
+
+  await redirectToProvider(
+    auth.api.linkSocialAccount({
+      headers: await headers(),
+      body: {
+        provider,
+        callbackURL: `/${locale}/account?linked=${provider}`,
+        errorCallbackURL: `/${locale}/account`,
+      },
+    }),
+    locale,
+    (message) => redirectWithError("/account", message),
+    "/account"
+  )
+}
+
+export async function unlinkAccountAction(accountId: string) {
+  try {
+    await auth.api.unlinkAccount({
+      headers: await headers(),
+      body: { accountId },
     })
-
-    if ("url" in result && result.url) {
-      url = result.url
-    }
   } catch (error) {
-    authFailure(await getErrorMessage(error))
+    await redirectWithError("/account", await getErrorMessage(error))
   }
 
-  if (url) {
-    nextRedirect(url)
-  }
-
-  redirect({ href: "/login", locale: await getLocale() })
+  redirect({ href: "/account", locale: await getLocale() })
 }
 
 export async function forgotPasswordAction(formData: FormData) {
@@ -121,10 +185,8 @@ export async function resetPasswordAction(formData: FormData) {
       body: { newPassword, token },
     })
   } catch (error) {
-    const message = await getErrorMessage(error)
-    redirect({
-      href: { pathname: "/reset-password", query: { token, error: message } },
-      locale: await getLocale(),
+    await redirectWithError("/reset-password", await getErrorMessage(error), {
+      token,
     })
   }
 
@@ -152,11 +214,7 @@ export async function signOutAction() {
       headers: await headers(),
     })
   } catch (error) {
-    const message = await getErrorMessage(error)
-    redirect({
-      href: { pathname: "/account", query: { error: message } },
-      locale: await getLocale(),
-    })
+    await redirectWithError("/account", await getErrorMessage(error))
   }
 
   redirect({ href: "/", locale: await getLocale() })
