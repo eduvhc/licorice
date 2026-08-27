@@ -1,0 +1,43 @@
+name: Build and publish image
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  IMAGE: git.home.iedora.com/iedora/licorice
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Docker client
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends docker.io
+
+      - name: Authenticate to Forgejo Container Registry
+        env:
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+        run: |
+          echo "$REGISTRY_TOKEN" | docker login git.home.iedora.com \
+            --username eduvhc --password-stdin
+
+      - name: Build image
+        run: |
+          docker build --pull \
+            --label org.opencontainers.image.source="${{ forgejo.server_url }}/${{ forgejo.repository }}" \
+            --label org.opencontainers.image.revision="${{ forgejo.sha }}" \
+            --tag "$IMAGE:sha-${{ forgejo.sha }}" \
+            --tag "$IMAGE:latest" \
+            .
+
+      - name: Push image
+        run: |
+          docker push "$IMAGE:sha-${{ forgejo.sha }}"
+          docker push "$IMAGE:latest"

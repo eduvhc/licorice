@@ -1,10 +1,16 @@
 # Deploying licorice
 
-This app is deployed by **Coolify**, on a Proxmox homelab
+This app is currently deployed by **Coolify**, on a Proxmox homelab
 ([simplab](https://github.com/eduvhc/simplab)) — VM 211 "apps",
 `192.168.50.211`. Coolify clones _this_ repository and builds it here, so the
 build context, the Dockerfile and the deploy record all live in this repo.
 simplab declares the machines; it does not describe the apps that run on them.
+
+Forgejo Actions also builds and publishes an OCI image to
+`git.home.iedora.com/iedora/licorice`. Each build publishes an immutable
+`sha-<commit>` tag and updates `latest`. The OCI source label links the package
+to this repository. This image is the future Kamal 2 deployment input; Kamal is
+not configured yet, so Coolify remains the only deployment controller.
 
 ## Build pack: Dockerfile, not compose
 
@@ -32,8 +38,8 @@ Servers → Add a new server            (apps, 192.168.50.211, port 22, user roo
 Then the app:
 
 ```
-Projects → Add resource → Public Repository
-  Repository     https://github.com/eduvhc/licorice
+Projects → Add resource → Private Repository
+  Repository     https://git.home.iedora.com/iedora/licorice
   Branch         master
   Build pack     Dockerfile
   Base Directory /
@@ -126,7 +132,7 @@ file, and a Coolify deploy is not — its state lives in Coolify's Postgres. Thi
 page is what closes that gap, which is why it is committed here rather than
 held in the UI.
 
-Two loose ends left on GitHub, neither of them in this repo: the `KAMAL_SSH_KEY`
-and `KAMAL_REGISTRY_PASSWORD` **repository secrets**, which can be deleted, and
-the old `ghcr.io/eduvhc/licorice` package, which nothing pulls any more. Coolify
-builds from source on the apps VM; there is no registry in this path.
+The previous GitHub Actions secrets and `ghcr.io/eduvhc/licorice` package are
+not used by this deployment path. The Forgejo Actions registry credential is a
+repository secret reconciled by the homelab Forgejo Ansible role; it is never
+committed to this application repository.

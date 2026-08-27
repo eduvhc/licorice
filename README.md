@@ -13,7 +13,7 @@ Idiomatic `Next.js 16` monorepo template with `React 19`, `shadcn/ui`, `Better A
 - Provider-agnostic transactional email (`apps/web/features/email/*`), `react-email` templates, local preview server, local Mailpit catcher via `docker-compose.yml`
 - Baseline security headers + CSP (`next.config.ts`)
 - `pino` structured logging, correlated with `@sentry/nextjs` traces (both optional, zero-config in dev)
-- `vitest` for unit tests, GitHub Actions CI (`.github/workflows/ci.yml`), `lefthook` pre-commit lint/format
+- `vitest` for unit tests, Forgejo Actions image publishing, `lefthook` pre-commit lint/format
 - `@typescript/native-preview` via `tsgo`
 - `shadcn/ui` in `packages/ui`
 - `pnpm` workspaces + `turbo`, on Node 26
@@ -178,7 +178,8 @@ Point `SMTP_HOST=localhost` / `SMTP_PORT=1025` at it in `.env` to route real SMT
 ## Testing & CI
 
 - `vitest` (`apps/web/vitest.config.ts`), run with `pnpm run test`; seed tests at `lib/env.test.ts` and `features/auth/lib/auth-providers.test.ts` as copy-pasteable examples for new slices
-- `.github/workflows/ci.yml`: lint, typecheck, test, and build on every push/PR via `turbo`, using dummy auth env vars (no secrets required)
+- `.forgejo/workflows/publish-image.yml`: builds the production Docker image on each
+  `master` push and publishes immutable `sha-<commit>` plus `latest` OCI tags
 - `lefthook.yml`: pre-commit hook runs `pnpm run format` and `pnpm run lint` (via `turbo`, same as CI); run `pnpm dlx lefthook install` once after cloning (see Getting started)
 
 ## Database & migrations
