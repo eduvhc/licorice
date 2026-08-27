@@ -12,7 +12,7 @@ application VM.
 | Item | Value |
 |---|---|
 | Application URL | https://licorice.home.iedora.com |
-| OCI image | `iedora/licorice` via `git.home.iedora.com` |
+| OCI image | `iedora/licorice` via `git.iedora.com` |
 | Deployment target | 192.168.50.64 |
 | Runtime controller | Kamal 2.12.0 |
 | Persistent data | Docker volume `licorice-data` mounted at `/app/data` |

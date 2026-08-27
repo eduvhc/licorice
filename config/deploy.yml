@@ -20,7 +20,7 @@ proxy:
     timeout: 3
 
 registry:
-  server: git.home.iedora.com
+  server: git.iedora.com
   username: eduvhc
   password:
     - KAMAL_REGISTRY_PASSWORD
