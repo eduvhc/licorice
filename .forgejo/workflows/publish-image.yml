@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: git.home.iedora.com/iedora/licorice
+  IMAGE: git.iedora.com/iedora/licorice
 
 jobs:
   publish:
@@ -25,7 +25,7 @@ jobs:
         env:
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
         run: |
-          echo "$REGISTRY_TOKEN" | docker login git.home.iedora.com \
+          echo "$REGISTRY_TOKEN" | docker login git.iedora.com \
             --username eduvhc --password-stdin
 
       - name: Build image
