@@ -11,7 +11,7 @@ application VM.
 
 | Item | Value |
 |---|---|
-| Application URL | https://licorice.home.iedora.com |
+| Application URL | https://licorice.iedora.com |
 | OCI image | `iedora/licorice` via `git.iedora.com` |
 | Deployment target | 192.168.50.64 |
 | Runtime controller | Kamal 2.12.0 |
@@ -51,4 +51,4 @@ Back up the Docker volume before treating customer data as recoverable.
 
 After a push, inspect the Forgejo workflow. It must publish the immutable tag,
 complete the Kamal deployment job, and receive HTTP 200 from `/health` at
-https://licorice.home.iedora.com/health.
+https://licorice.iedora.com/health.
