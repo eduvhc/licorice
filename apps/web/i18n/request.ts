@@ -15,6 +15,8 @@ import legalEn from "@/features/legal/messages/en.json"
 import legalPt from "@/features/legal/messages/pt.json"
 import marketingEn from "@/features/marketing/messages/en.json"
 import marketingPt from "@/features/marketing/messages/pt.json"
+import pricingEn from "@/features/pricing/messages/en.json"
+import pricingPt from "@/features/pricing/messages/pt.json"
 import recipesEn from "@/features/recipes/messages/en.json"
 import recipesPt from "@/features/recipes/messages/pt.json"
 import settingsEn from "@/features/settings/messages/en.json"
@@ -33,6 +35,7 @@ const messages = {
     landing: landingEn,
     legal: legalEn,
     marketing: marketingEn,
+    pricing: pricingEn,
     recipes: recipesEn,
     settings: settingsEn,
     shared: sharedEn,
@@ -45,6 +48,7 @@ const messages = {
     landing: landingPt,
     legal: legalPt,
     marketing: marketingPt,
+    pricing: pricingPt,
     recipes: recipesPt,
     settings: settingsPt,
     shared: sharedPt,

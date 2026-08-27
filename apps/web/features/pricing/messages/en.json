@@ -1,0 +1,64 @@
+{
+  "title": "Pricing",
+  "description": "Manage shops and per-package prices to compare the cost of each recipe.",
+  "retailers": {
+    "title": "Shops",
+    "new": "New shop",
+    "edit": "Edit shop",
+    "delete": "Delete shop",
+    "empty": "No shops yet.",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Continente",
+      "color": "Colour",
+      "url": "Website",
+      "urlPlaceholder": "https://www.example.com"
+    },
+    "table": {
+      "name": "Name",
+      "url": "Website",
+      "offers": "Prices",
+      "actions": "Actions"
+    }
+  },
+  "offers": {
+    "title": "Prices",
+    "new": "New price",
+    "edit": "Edit price",
+    "delete": "Delete price",
+    "empty": "No prices recorded yet.",
+    "fields": {
+      "retailer": "Shop",
+      "item": "Item",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "price": "Price",
+      "pricePlaceholder": "7.90",
+      "url": "Link",
+      "urlPlaceholder": "https://www.example.com/product"
+    },
+    "table": {
+      "retailer": "Shop",
+      "item": "Item",
+      "package": "Package",
+      "price": "Price",
+      "actions": "Actions"
+    }
+  },
+  "baskets": {
+    "title": "Cost by shop",
+    "empty": "No shop prices yet. Add prices to compare.",
+    "partial": "{percent}%",
+    "partialHint": "Not every ingredient is priced at this shop."
+  },
+  "errors": {
+    "invalid": "Check the form fields.",
+    "inUse": "Still in use and cannot be deleted.",
+    "duplicate": "That name already exists.",
+    "server": "Could not save. Try again."
+  },
+  "toast": {
+    "saved": "Saved.",
+    "deleted": "Deleted."
+  }
+}

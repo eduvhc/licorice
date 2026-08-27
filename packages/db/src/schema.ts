@@ -48,6 +48,28 @@ export interface BottlesTable {
   price_cents: number
 }
 
+export interface RetailersTable {
+  id: Generated<number>
+  name: string
+  color: string
+  url: string
+  notes: string
+  created_at: Generated<string>
+}
+
+export interface PriceOffersTable {
+  id: Generated<number>
+  retailer_id: number
+  item_id: number
+  quantity: number
+  unit_id: number
+  price_cents: number
+  valid_on: string | null
+  url: string
+  notes: string
+  created_at: Generated<string>
+}
+
 export type AppSchema = {
   items: ItemsTable
   recipes: RecipesTable
@@ -56,4 +78,6 @@ export type AppSchema = {
   tags: TagsTable
   units: UnitsTable
   bottles: BottlesTable
+  retailers: RetailersTable
+  price_offers: PriceOffersTable
 }

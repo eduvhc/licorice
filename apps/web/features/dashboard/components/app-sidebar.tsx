@@ -21,6 +21,7 @@ import {
   CommandIcon,
   LayoutDashboardIcon,
   PackageIcon,
+  StoreIcon,
   Settings2Icon,
   SettingsIcon,
 } from "lucide-react"
@@ -32,6 +33,7 @@ const mainNav = [
   { key: "overview", href: "/dashboard", icon: LayoutDashboardIcon },
   { key: "recipes", href: "/dashboard/recipes", icon: BookOpenIcon },
   { key: "inventory", href: "/dashboard/inventory", icon: PackageIcon },
+  { key: "pricing", href: "/dashboard/pricing", icon: StoreIcon },
   { key: "settings", href: "/dashboard/settings", icon: SettingsIcon },
 ] as const
 

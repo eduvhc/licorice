@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { RecipeDetail } from "@/features/recipes/components/recipe-detail"
 import { getRecipe } from "@/features/recipes/server/queries"
+import { getRecipeRetailerBaskets } from "@/features/pricing/server/queries"
 import { listBottles } from "@/features/settings/server/queries"
 import { routing } from "@/i18n/routing"
 
@@ -20,11 +21,12 @@ export default async function Page({ params }: RecipeDetailRouteProps) {
   const recipeId = Number(id)
   if (!Number.isInteger(recipeId) || recipeId <= 0) notFound()
 
-  const [recipe, bottles] = await Promise.all([
+  const [recipe, bottles, baskets] = await Promise.all([
     getRecipe(recipeId),
     listBottles(),
+    getRecipeRetailerBaskets(recipeId),
   ])
   if (!recipe) notFound()
 
-  return <RecipeDetail recipe={recipe} bottles={bottles} />
+  return <RecipeDetail recipe={recipe} bottles={bottles} baskets={baskets} />
 }
