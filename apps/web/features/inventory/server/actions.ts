@@ -50,7 +50,7 @@ export async function saveItemAction(
 
     const values = {
       name: parsed.data.name,
-      price_cents: parsed.data.priceCents,
+      price_cents: 0,
       tag_id: parsed.data.tagId,
       unit_id: parsed.data.unitId,
     }

@@ -54,19 +54,12 @@ function ItemForm({
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const price = Number.parseFloat(String(formData.get("price") ?? "").replace(",", "."))
-
-    if (Number.isNaN(price) || price < 0) {
-      setError(t("errors.invalid"))
-      return
-    }
 
     setError(null)
     startTransition(async () => {
       const result = await saveItemAction(
         {
           name: String(formData.get("name") ?? ""),
-          priceCents: Math.round(price * 100),
           tagId,
           unitId,
         },
@@ -126,39 +119,25 @@ function ItemForm({
             </SelectContent>
           </Select>
         </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field>
-            <FieldLabel htmlFor="item-unit">{t("fields.unit")}</FieldLabel>
-            <Select
-              value={unitId ? String(unitId) : undefined}
-              onValueChange={(value) => setUnitId(Number(value))}
-              items={units.map((unit) => ({ label: unit.name, value: String(unit.id) }))}
-            >
-              <SelectTrigger id="item-unit" className="w-full">
-                <SelectValue placeholder={t("fields.unitPlaceholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map((unit) => (
-                  <SelectItem key={unit.id} value={String(unit.id)}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="item-price">{t("fields.price")}</FieldLabel>
-            <Input
-              id="item-price"
-              name="price"
-              type="text"
-              inputMode="decimal"
-              placeholder={t("fields.pricePlaceholder")}
-              defaultValue={item ? (item.price_cents / 100).toFixed(2) : undefined}
-              required
-            />
-          </Field>
-        </div>
+        <Field>
+          <FieldLabel htmlFor="item-unit">{t("fields.unit")}</FieldLabel>
+          <Select
+            value={unitId ? String(unitId) : undefined}
+            onValueChange={(value) => setUnitId(Number(value))}
+            items={units.map((unit) => ({ label: unit.name, value: String(unit.id) }))}
+          >
+            <SelectTrigger id="item-unit" className="w-full">
+              <SelectValue placeholder={t("fields.unitPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {units.map((unit) => (
+                <SelectItem key={unit.id} value={String(unit.id)}>
+                  {unit.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </FieldGroup>
       <DialogFooter className="mt-6">

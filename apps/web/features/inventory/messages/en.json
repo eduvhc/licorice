@@ -1,6 +1,6 @@
 {
   "title": "Inventory",
-  "description": "Manage the items you buy and their unit price. Recipes pull their cost from here.",
+  "description": "Manage the items you buy. Prices are tracked per shop in Pricing, and recipes cost themselves from there.",
   "newItem": "New item",
   "editItem": "Edit item",
   "deleteItem": "Delete item",
@@ -10,8 +10,6 @@
     "namePlaceholder": "Lemons",
     "unit": "Unit",
     "unitPlaceholder": "un, ml, g…",
-    "price": "Price (EUR)",
-    "pricePlaceholder": "0.99",
     "type": "Type",
     "selectType": "Select a type"
   },
@@ -30,7 +28,6 @@
     "name": "Name",
     "unit": "Unit",
     "type": "Type",
-    "price": "Unit price",
     "actions": "Actions"
   },
   "errors": {

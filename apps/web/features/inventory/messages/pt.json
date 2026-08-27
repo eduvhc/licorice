@@ -1,6 +1,6 @@
 {
   "title": "Inventário",
-  "description": "Gerencie os itens que compra e o preço unitário. As receitas tiram o custo daqui.",
+  "description": "Gerencie os itens que compra. Os preços são registados por loja em Preços, e as receitas calculam o custo a partir daí.",
   "newItem": "Novo item",
   "editItem": "Editar item",
   "deleteItem": "Eliminar item",
@@ -10,8 +10,6 @@
     "namePlaceholder": "Limões",
     "unit": "Unidade",
     "unitPlaceholder": "un, ml, g…",
-    "price": "Preço (EUR)",
-    "pricePlaceholder": "0,99",
     "type": "Tipo",
     "selectType": "Selecione um tipo"
   },
@@ -30,7 +28,6 @@
     "name": "Nome",
     "unit": "Unidade",
     "type": "Tipo",
-    "price": "Preço unitário",
     "actions": "Ações"
   },
   "errors": {

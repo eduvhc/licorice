@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useFormatter, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
@@ -125,7 +125,6 @@ function ItemsTable({
   filterTagId: number | "all"
 }) {
   const t = useTranslations("inventory")
-  const format = useFormatter()
   const router = useRouter()
   const [pendingId, setPendingId] = React.useState<number | null>(null)
   const [, startTransition] = React.useTransition()
@@ -188,7 +187,6 @@ function ItemsTable({
               <TableHead>{t("table.name")}</TableHead>
               <TableHead>{t("table.type")}</TableHead>
               <TableHead>{t("table.unit")}</TableHead>
-              <TableHead className="text-right">{t("table.price")}</TableHead>
               <TableHead className="w-12">
                 <span className="sr-only">{t("table.actions")}</span>
               </TableHead>
@@ -198,7 +196,7 @@ function ItemsTable({
             {visibleItems.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={4}
                   className="h-16 text-center text-muted-foreground"
                 >
                   {t("empty")}
@@ -216,12 +214,6 @@ function ItemsTable({
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {item.unit.name}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {format.number(item.price_cents / 100, {
-                      style: "currency",
-                      currency: "EUR",
-                    })}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
